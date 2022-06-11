@@ -1,5 +1,6 @@
-import { Badge } from "@mantine/core";
-import { Calendar, DateRangePicker } from "@mantine/dates";
+import { useState } from "react";
+import { Badge, Group, Modal } from "@mantine/core";
+import { Calendar } from "@mantine/dates";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
@@ -9,6 +10,7 @@ import invariant from "tiny-invariant";
 import type { Reservation } from "~/models/reservation.server";
 import { getReservation, cancelReservation } from "~/models/reservation.server";
 import { requireUserId } from "~/session.server";
+import GoBackButton from "~/components/GoBackButton";
 
 type LoaderData = {
   reservation: Reservation;
@@ -38,11 +40,11 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export default function ReservationDetailsPage() {
+  const [cancelOpen, setCancelOpen] = useState(false);
+
   const { reservation } = useLoaderData() as LoaderData;
   const since = dayjs(reservation.since);
   const until = dayjs(reservation.until);
-  const arrival = reservation?.arrival ? dayjs(reservation.arrival) : null;
-  const leave = reservation?.leave ? dayjs(reservation.leave) : null;
   const created = dayjs(reservation.createdAt);
   const updated = dayjs(reservation.updatedAt);
   const { guests } = reservation;
@@ -54,17 +56,17 @@ export default function ReservationDetailsPage() {
           initialMonth={since.toDate()}
           dayStyle={(date) =>
             dayjs(date).isAfter(dayjs(since).subtract(1, "day")) &&
-            dayjs(date).isBefore(dayjs(until).add(1, "day"))
+            dayjs(date).isBefore(dayjs(until))
               ? { backgroundColor: "red", color: "white" }
               : {}
           }
         />
         <div>
           <h3 className="text-2xl font-bold">
-            Since: {since.format("DD/MM/YYYY")} {arrival?.format("hh:mm")}
+            Since: {since.toDate().toLocaleString()}
           </h3>
           <h3 className="text-2xl font-bold">
-            Until: {until.format("DD/MM/YYYY")} {leave?.format("hh:mm")}
+            Until: {until.toDate().toLocaleString()}
           </h3>
           <div className="py-6">
             Guests:{" "}
@@ -72,34 +74,51 @@ export default function ReservationDetailsPage() {
               <Badge key={guest}>{guest}</Badge>
             ))}
           </div>
-          <p>Created at: {created.format("DD/MM/YYYY hh:mm")}</p>
-          <p>Last updated at: {updated.format("DD/MM/YYYY hh:mm")}</p>
+          <p>Created at: {created.toDate().toLocaleString()}</p>
+          <p>Last updated at: {updated.toDate().toLocaleString()}</p>
         </div>
       </div>
       <hr className="my-4" />
       <div className="flex items-start gap-3">
-        <Link
-          to="/reservations"
-          className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-        >
-          Go back
-        </Link>
+        <GoBackButton />
         {until.isAfter(dayjs()) && (
           <Link
-            to={`../change/${reservation.id}`}
+            to={`/reservations/change/${reservation.id}`}
             className="rounded bg-yellow-500  py-2 px-4 text-white hover:bg-yellow-600 focus:bg-yellow-400"
           >
             Change
           </Link>
         )}
-        <Form method="post">
-          <button
-            type="submit"
-            className="rounded bg-red-500  py-2 px-4 text-white hover:bg-red-600 focus:bg-red-400"
-          >
-            Cancel
-          </button>
-        </Form>
+        <Modal
+          opened={cancelOpen}
+          onClose={() => setCancelOpen(false)}
+          withCloseButton={false}
+          title="Are you sure you want to cancel your reservation?"
+        >
+          <Group position="center">
+            <button
+              onClick={() => setCancelOpen(false)}
+              className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+            >
+              No
+            </button>
+            <Form method="post">
+              <button
+                type="submit"
+                className="rounded bg-red-500  py-2 px-4 text-white hover:bg-red-600 focus:bg-red-400"
+              >
+                Yes
+              </button>
+            </Form>
+          </Group>
+        </Modal>
+        <button
+          type="submit"
+          className="rounded bg-red-500  py-2 px-4 text-white hover:bg-red-600 focus:bg-red-400"
+          onClick={() => setCancelOpen(true)}
+        >
+          Cancel
+        </button>
       </div>
     </>
   );

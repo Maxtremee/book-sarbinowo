@@ -40,19 +40,19 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   await adminCancelReservation({ id: params.reservationId });
 
-  return redirect("/reservations");
+  return redirect("/admin");
 };
 
 export default function ReservationDetailsPage() {
   const { reservation, user } = useLoaderData() as LoaderData;
 
+  const { id, guests } = reservation
   const since = dayjs(reservation.since);
   const until = dayjs(reservation.until);
   const arrival = reservation?.arrival ? dayjs(reservation.arrival) : null;
   const leave = reservation?.leave ? dayjs(reservation.leave) : null;
   const created = dayjs(reservation.createdAt);
   const updated = dayjs(reservation.updatedAt);
-  const { guests } = reservation;
 
   return (
     <>
@@ -79,6 +79,7 @@ export default function ReservationDetailsPage() {
               <Badge key={guest}>{guest}</Badge>
             ))}
           </div>
+          <p>ID: {id}</p>
           <p>Made by: {user?.email}</p>
           <p>Created at: {created.format("DD/MM/YYYY hh:mm")}</p>
           <p>Last updated at: {updated.format("DD/MM/YYYY hh:mm")}</p>
@@ -87,14 +88,14 @@ export default function ReservationDetailsPage() {
       <hr className="my-4" />
       <div className="flex items-start gap-3">
         <Link
-          to="/reservations"
+          to="/admin"
           className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
         >
           Go back
         </Link>
         {until.isAfter(dayjs()) && (
           <Link
-            to={`../change/${reservation.id}`}
+            to={`/admin/change/${reservation.id}`}
             className="rounded bg-yellow-500  py-2 px-4 text-white hover:bg-yellow-600 focus:bg-yellow-400"
           >
             Change

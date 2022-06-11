@@ -18,15 +18,17 @@ enum ReservationState {
 }
 
 model User {
-  id    String @id @default(cuid())
-  email String @unique
-  role Role @default(USER)
+  id        String  @id @default(cuid())
+  email     String  @unique
+  role      Role    @default(USER)
+  firstName String  @default("User")
+  lastName  String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  password Password?
-  reservations Reservation[] 
+  password     Password?
+  reservations Reservation[]
 }
 
 model Password {
@@ -39,16 +41,15 @@ model Password {
 model Reservation {
   id String @id @default(cuid())
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  state ReservationState @default(ACTIVE)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  state     ReservationState @default(ACTIVE)
 
-  since DateTime 
-  until DateTime
+  since   DateTime
+  until   DateTime
   guests String[]
-  arrival DateTime?
-  leave DateTime?
-  
+
   user   User   @relation(fields: [userId], references: [id])
   userId String
 }
+

@@ -101,6 +101,9 @@ export async function checkCurrentOccupant() {
       },
       until: {
         gte: today
+      },
+      state: {
+        equals: ReservationState.ACTIVE
       }
     },
     include: {

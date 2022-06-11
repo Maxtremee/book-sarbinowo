@@ -1,67 +1,81 @@
-import {
-  Group,
-  Text,
-  TextInput,
-} from "@mantine/core";
+import { useEffect, useState } from "react";
+import type { ActionFunction, MetaFunction } from "@remix-run/node";
+import { Button, Group, Text, TextInput } from "@mantine/core";
 import { DateRangePicker, TimeInput } from "@mantine/dates";
-import { formList, useForm, zodResolver } from "@mantine/form";
+import { formList, useForm } from "@mantine/form";
 import { randomId } from "@mantine/hooks";
-import type { ActionFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, useSubmit } from "@remix-run/react";
+import { Form, useActionData, useFetcher, useSubmit } from "@remix-run/react";
 import dayjs from "dayjs";
-import { z } from "zod";
 
-import { createReservation } from "~/models/reservation.server";
+import {
+  checkAvailability,
+  createReservation,
+} from "~/models/reservation.server";
 import { requireUserId } from "~/session.server";
+import { useUser } from "~/utils";
+import GoBackButton from "~/components/GoBackButton";
 
-const reservationSchema = z.object({
-  stay: z
-    .array(z.date(), z.date())
-    .length(2)
-    .nonempty({ message: "You need to specify stay date range" }),
-  arrival: z.date().optional(),
-  leave: z.date().optional(),
-  guests: z
-    .array(z.string())
-    .nonempty({ message: "At least one guest is required" }),
-});
-
-type ActionData = {
+type MakeReservationErrorData = {
   errors?: {
-    since?: string;
-    until?: string;
+    date?: string;
     guests?: string;
   };
 };
 
-export const action: ActionFunction = async ({ request }) => {
+export const action: ActionFunction = async ({ request, params }) => {
   const userId = await requireUserId(request);
 
   const formData = await request.formData();
   const since = formData.get("since");
   const until = formData.get("until");
-  const arrival = formData.get("arrival") as string;
-  const leave = formData.get("leave") as string;
   const guests = formData.get("guests");
 
-  if (typeof since !== "string" || new Date(since) < new Date()) {
-    return json<ActionData>(
-      { errors: { since: "Since date is required" } },
+  if (typeof since !== "string") {
+    return json<MakeReservationErrorData>(
+      { errors: { date: "Since date is required" } },
       { status: 400 }
     );
   }
 
-  if (typeof until !== "string" || new Date(until) < new Date()) {
-    return json<ActionData>(
-      { errors: { until: "Until date is required" } },
+  if (dayjs(since) < dayjs().startOf("day")) {
+    return json<MakeReservationErrorData>(
+      { errors: { date: "Start of stay cannot be earlier than today" } },
+      { status: 400 }
+    );
+  }
+
+  if (typeof until !== "string") {
+    return json<MakeReservationErrorData>(
+      { errors: { date: "Until date is required" } },
+      { status: 400 }
+    );
+  }
+
+  if (dayjs(until) < dayjs().add(1, "day")) {
+    return json<MakeReservationErrorData>(
+      { errors: { date: "End of stay cannot be earlier than tommorrow" } },
+      { status: 400 }
+    );
+  }
+
+  if (!checkAvailability({ since: new Date(since), until: new Date(until) })) {
+    return json<MakeReservationErrorData>(
+      { errors: { date: "The apartment is booked during this time" } },
       { status: 400 }
     );
   }
 
   if (typeof guests !== "string" || !guests) {
-    return json<ActionData>(
-      { errors: { until: "Guest list is required" } },
+    return json<MakeReservationErrorData>(
+      { errors: { guests: "At least one guest is required" } },
+      { status: 400 }
+    );
+  }
+
+  if (new Array(JSON.parse(guests)).length < 1) {
+    return json<MakeReservationErrorData>(
+      { errors: { guests: "At least one guest is required" } },
       { status: 400 }
     );
   }
@@ -70,28 +84,75 @@ export const action: ActionFunction = async ({ request }) => {
     since: new Date(since),
     until: new Date(until),
     guests: JSON.parse(guests),
-    arrival: arrival ? new Date(arrival) : null,
-    leave: leave ? new Date(leave) : null,
     userId,
   });
 
   return redirect(`/reservations/${reservation.id}`);
 };
 
-export default function NewNotePage() {
-  const submit = useSubmit();
+export const meta: MetaFunction = () => {
+  return {
+    title: "New reservation",
+  };
+};
 
+const getSinceUntil = (arrivalHour: Date, leaveHour: Date, stay: Date[]) => {
+  const arrival = dayjs(arrivalHour);
+  const leave = dayjs(leaveHour);
+
+  const since = dayjs(stay[0])
+    .hour(arrival.hour())
+    .minute(arrival.minute())
+    .second(0);
+  const until = dayjs(stay[1])
+    .hour(leave.hour())
+    .minute(leave.minute())
+    .second(0);
+  return { since, until };
+};
+
+interface Availability {
+  message: string;
+  color: string;
+}
+
+const showAvailability = (fetcher: any): Availability => {
+  switch (fetcher.state) {
+    case "submitting":
+      return {
+        message: "Checking availability...",
+        color: "text-yellow-400",
+      };
+    case "idle":
+      return fetcher.data?.isAvailable
+        ? { message: "Apartment is available", color: "text-green-400" }
+        : {
+            message:
+              "Apartment is occupied during this time. Try with different dates",
+            color: "text-red-400",
+          };
+    default:
+      return { message: "", color: "" };
+  }
+};
+
+export default function NewNotePage() {
+  const actionData = useActionData() as MakeReservationErrorData;
+  const fetcher = useFetcher();
+  const submit = useSubmit();
+  const user = useUser();
   const form = useForm({
     initialValues: {
-      stay: formList([
-        dayjs().add(1, "day").toDate(),
-        dayjs().add(8, "day").toDate(),
+      stay: formList([new Date(), dayjs().add(7, "day").toDate()]),
+      arrival: dayjs().hour(10).minute(0).toDate(),
+      leave: dayjs().hour(16).minute(0).toDate(),
+      guests: formList([
+        {
+          name: `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`,
+          key: randomId(),
+        },
       ]),
-      arrival: null,
-      leave: null,
-      guests: formList([{ name: "", key: randomId() }]),
     },
-    schema: zodResolver(reservationSchema),
   });
 
   const handleAddGuest = (event: any) => {
@@ -107,44 +168,49 @@ export default function NewNotePage() {
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
-    const since = dayjs(form.values.stay[0]).startOf('day');
-    const until = dayjs(form.values.stay[1]).startOf('day');
+    const { since, until } = getSinceUntil(
+      form.values.arrival,
+      form.values.leave,
+      form.values.stay
+    );
+
     const guests = JSON.stringify(
       form.values.guests.filter(({ name }) => name).map(({ name }) => name)
     );
 
     const formData = new FormData();
-
     formData.set("since", since.toISOString());
     formData.set("until", until.toISOString());
-
-    if (form.values.arrival !== null) {
-      const arrival = dayjs(form.values.arrival)
-        .set("year", since.day())
-        .set("month", since.month())
-        .set("year", since.year());
-      formData.set("arrival", arrival.toISOString());
-    }
-    if (form.values.leave !== null) {
-      const leave = dayjs(form.values.leave)
-        .set("year", until.day())
-        .set("month", until.month())
-        .set("year", until.year());
-      formData.set("leave", leave.toISOString());
-    }
-    if (form.values.guests.length > 0) {
-      formData.set("guests", guests);
-    }
+    formData.set("guests", guests);
 
     submit(formData, { method: "post" });
   };
 
+  const availability = showAvailability(fetcher);
+
+  // check availability
+  useEffect(() => {
+    if (form.values.stay[0] && form.values.stay[1]) {
+      const { since, until } = getSinceUntil(
+        form.values.arrival,
+        form.values.leave,
+        form.values.stay
+      );
+
+      const params = new URLSearchParams();
+      params.set("since", since.toISOString());
+      params.set("until", until.toISOString());
+
+      fetcher.submit(params, { action: "/reservations/isAvailable" });
+    }
+  }, [form.values.stay]);
+
   return (
-    <Form
-      method="post"
-      onSubmit={handleSubmit}
-      className="flex w-full flex-col gap-4"
-    >
+    <Form onSubmit={handleSubmit} className="flex w-full flex-col gap-4">
+      {/* <div className="flex items-start gap-3"></div> */}
+      <Group>
+        <GoBackButton />
+      </Group>
       <Group mb="xs">
         <Text weight={500}>Length of stay</Text>
       </Group>
@@ -152,21 +218,30 @@ export default function NewNotePage() {
         <DateRangePicker
           required
           label="Pick dates range"
+          amountOfMonths={2}
           className="grow"
+          error={actionData?.errors?.date}
+          excludeDate={(date) => date < dayjs().subtract(1, "day").toDate()}
           {...form.getInputProps("stay")}
         />
         <TimeInput
+          required
           label="Arrival time"
           clearable
           {...form.getInputProps("arrival")}
         />
         <TimeInput
+          required
           label="Leave time"
           clearable
           {...form.getInputProps("leave")}
         />
       </Group>
-      <Text>Apartment available:</Text>
+
+      <Text className={`${availability.color} text-right`}>
+        {availability.message}
+      </Text>
+
       <div>
         <Group mb="xs">
           <Text weight={500}>Guests</Text>
@@ -178,35 +253,37 @@ export default function NewNotePage() {
               required
               className="grow"
               placeholder="John Doe"
+              error={actionData?.errors?.guests}
               {...form.getListInputProps("guests", index, "name")}
             />
-            <button
+            <Button
               className="rounded bg-red-500 py-2 px-4 text-white hover:bg-red-600 focus:bg-red-400"
-              onClick={(event) => handleRemoveGuest(event, index)}
+              onClick={(event: any) => handleRemoveGuest(event, index)}
             >
               Delete
-            </button>
+            </Button>
           </Group>
         ))}
 
         <Group position="center" mt="md">
-          <button
+          <Button
             className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
             onClick={handleAddGuest}
           >
             + Add guest
-          </button>
+          </Button>
         </Group>
       </div>
 
-      <div className="text-center">
-        <button
+      <Group position="center" mt="md">
+        <Button
           type="submit"
           className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+          disabled={!fetcher.data?.isAvailable || form.values.guests.length < 1}
         >
           Save
-        </button>
-      </div>
+        </Button>
+      </Group>
     </Form>
   );
 }

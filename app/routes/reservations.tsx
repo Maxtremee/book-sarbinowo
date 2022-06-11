@@ -11,7 +11,9 @@ export default function ReservationsPage() {
         <h1 className="text-3xl font-bold">
           <Link to=".">Reservations</Link>
         </h1>
-        <p>{user.email}</p>
+        <p>
+          Welcome, {user.firstName} {user?.lastName}
+        </p>
         <div className="flex items-center justify-center gap-4">
           {user.role === "ADMIN" && (
             <Link

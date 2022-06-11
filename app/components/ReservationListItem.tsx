@@ -20,7 +20,7 @@ export default function ReservationListItem({
       <Text weight={500} size="lg" className="text-inherit">
         {dayjs(since).format("DD/MM/YYYY")}-{dayjs(until).format("DD/MM/YYYY")}
       </Text>
-      <Text>{guests.length} guests</Text>
+      <Text>{guests.length} {guests.length > 1 ? "guests" : "guest"}</Text>
     </Link>
   );
 }

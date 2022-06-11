@@ -5,7 +5,8 @@ const prisma = new PrismaClient();
 
 async function seed() {
   const email = "test@test.com";
-
+  const firstName = "Test";
+  const lastName = "User";
   let user = await prisma.user.findFirst({ where: { email } });
 
   if (!user) {
@@ -20,6 +21,8 @@ async function seed() {
           },
         },
         role: Role.ADMIN,
+        firstName,
+        lastName,
       },
     });
   }
@@ -27,9 +30,9 @@ async function seed() {
   await prisma.reservation.create({
     data: {
       userId: user.id,
-      since: new Date("October 15, 2022 12:00:00").toISOString(),
-      until: new Date("October 20, 2022 12:00:00").toISOString(),
-      guests: ["Test Test", "Test2 Test2"],
+      since: new Date("2022-07-01 10:00:00").toISOString(),
+      until: new Date("2022-07-08 16:00:00").toISOString(),
+      guests: ["Test", "Test2"],
     },
   });
 

@@ -22,6 +22,7 @@ interface ActionData {
   errors: {
     email?: string;
     password?: string;
+    firstName?: string;
   };
 }
 
@@ -29,6 +30,8 @@ export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
+  const firstName = formData.get("first-name");
+  const lastName = formData.get("last-name");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
 
   if (!validateEmail(email)) {
@@ -52,6 +55,13 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
+  if (typeof firstName !== "string") {
+    return json<ActionData>(
+      { errors: { password: "First name is required" } },
+      { status: 400 }
+    );
+  }
+
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
     return json<ActionData>(
@@ -60,7 +70,7 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
-  const user = await createUser(email, password);
+  const user = await createUser({ email, password, firstName, lastName });
 
   return createUserSession({
     request,
@@ -82,12 +92,15 @@ export default function Join() {
   const actionData = useActionData() as ActionData;
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
+  const firstNameRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (actionData?.errors?.email) {
       emailRef.current?.focus();
     } else if (actionData?.errors?.password) {
       passwordRef.current?.focus();
+    } else if (actionData?.errors?.firstName) {
+      firstNameRef.current?.focus();
     }
   }, [actionData]);
 
@@ -107,7 +120,7 @@ export default function Join() {
                 ref={emailRef}
                 id="email"
                 required
-                autoFocus={true}
+                autoFocus
                 name="email"
                 type="email"
                 autoComplete="email"
@@ -146,6 +159,50 @@ export default function Join() {
                   {actionData.errors.password}
                 </div>
               )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="first-name"
+              className="block text-sm font-medium text-gray-700"
+            >
+              First name
+            </label>
+            <div className="mt-1">
+              <input
+                id="first-name"
+                ref={firstNameRef}
+                name="first-name"
+                required
+                autoComplete="given-name"
+                aria-invalid={actionData?.errors?.firstName ? true : undefined}
+                aria-describedby="first-name-error"
+                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+              />
+              {actionData?.errors?.password && (
+                <div className="pt-1 text-red-700" id="first-name-error">
+                  {actionData.errors.firstName}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="last-name"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Last name
+            </label>
+            <div className="mt-1">
+              <input
+                id="last-name"
+                name="last-name"
+                autoComplete="family-name"
+                aria-describedby="last-name-error"
+                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+              />
             </div>
           </div>
 

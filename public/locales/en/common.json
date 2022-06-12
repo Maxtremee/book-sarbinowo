@@ -57,5 +57,7 @@
   "noPrevious": "No previous reservations",
   "ACTIVE": "Active",
   "CANCELED": "Canceled",
-  "guest": "Guest"
+  "guest": "Guest",
+  "arrival": "Arrival time",
+  "leave": "Leave time"
 }

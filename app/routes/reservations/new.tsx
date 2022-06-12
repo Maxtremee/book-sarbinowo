@@ -21,6 +21,7 @@ import { useUser } from "~/utils";
 import GoBackButton from "~/components/GoBackButton";
 import i18next from "~/i18next.server";
 import { useTranslation } from "react-i18next";
+import { useLocale } from "remix-i18next";
 
 type MakeReservationErrorData = {
   errors?: {
@@ -144,6 +145,7 @@ const showAvailability = (fetcher: any): { message: string; color: string } => {
 
 export default function NewNotePage() {
   const { t } = useTranslation();
+  const locale = useLocale()
   const actionData = useActionData() as MakeReservationErrorData;
   const fetcher = useFetcher();
   const submit = useSubmit();
@@ -225,6 +227,7 @@ export default function NewNotePage() {
           required
           label={t("pickDatesLabel")}
           amountOfMonths={2}
+          locale={locale}
           className="grow"
           error={actionData?.errors?.date}
           excludeDate={(date) => date < dayjs().subtract(1, "day").toDate()}
@@ -232,13 +235,13 @@ export default function NewNotePage() {
         />
         <TimeInput
           required
-          label="Arrival time"
+          label={t("arrival")}
           clearable
           {...form.getInputProps("arrival")}
         />
         <TimeInput
           required
-          label="Leave time"
+          label={t("leave")}
           clearable
           {...form.getInputProps("leave")}
         />

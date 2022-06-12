@@ -55,5 +55,7 @@
   "noPrevious": "Brak poprzednich rezerwacji",
   "ACTIVE": "Aktywna",
   "CANCELED": "Anulowana",
-  "guest": "Gość"
+  "guest": "Gość",
+  "arrival": "Czas przyjazdu",
+  "leave": "Czas wyjazdu"
 }

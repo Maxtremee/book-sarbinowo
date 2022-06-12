@@ -12,6 +12,7 @@ import { getReservation, cancelReservation } from "~/models/reservation.server";
 import { requireUserId } from "~/session.server";
 import GoBackButton from "~/components/GoBackButton";
 import { useTranslation } from "react-i18next";
+import { useLocale } from "remix-i18next";
 
 type LoaderData = {
   reservation: Reservation;

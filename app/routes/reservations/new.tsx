@@ -145,7 +145,6 @@ const showAvailability = (fetcher: any): { message: string; color: string } => {
 
 export default function NewNotePage() {
   const { t } = useTranslation();
-  const locale = useLocale()
   const actionData = useActionData() as MakeReservationErrorData;
   const fetcher = useFetcher();
   const submit = useSubmit();
@@ -227,7 +226,6 @@ export default function NewNotePage() {
           required
           label={t("pickDatesLabel")}
           amountOfMonths={2}
-          locale={locale}
           className="grow"
           error={actionData?.errors?.date}
           excludeDate={(date) => date < dayjs().subtract(1, "day").toDate()}

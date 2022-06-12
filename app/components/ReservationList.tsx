@@ -1,5 +1,6 @@
 import { Reservation } from "@prisma/client";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 import ReservationListItem from "./ReservationListItem";
 
 export default function ReservationList({
@@ -7,6 +8,7 @@ export default function ReservationList({
 }: {
   reservations: Reservation[];
 }) {
+  const { t } = useTranslation();
   const upcoming = reservations.filter(({ since }) =>
     dayjs(since).isAfter(dayjs())
   );
@@ -19,10 +21,10 @@ export default function ReservationList({
   );
   return (
     <>
-      <p className="font-bold">Upcoming</p>
+      <p className="font-bold">{t("upcoming")}</p>
 
       {upcoming.length === 0 ? (
-        <p className="p-4">No upcoming reservations</p>
+        <p className="p-4">{t("noUpcoming")}</p>
       ) : (
         <ol>
           {upcoming.map((reservation) => (
@@ -33,10 +35,10 @@ export default function ReservationList({
         </ol>
       )}
       <hr className="my-4" />
-      <p className="font-bold">Current</p>
+      <p className="font-bold">{t("current")}</p>
 
       {current.length === 0 ? (
-        <p className="p-4">No current reservations</p>
+        <p className="p-4">{t("noCurrent")}</p>
       ) : (
         <ol>
           {current.map((reservation) => (
@@ -47,10 +49,10 @@ export default function ReservationList({
         </ol>
       )}
       <hr className="my-4" />
-      <p className="font-bold">Previous</p>
+      <p className="font-bold">{t("previous")}</p>
 
       {previous.length === 0 ? (
-        <p className="p-4">No previous reservations</p>
+        <p className="p-4">{t("noPrevious")}</p>
       ) : (
         <ol>
           {previous.map((reservation) => (

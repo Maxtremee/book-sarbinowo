@@ -11,11 +11,15 @@ import { getUserId, createUserSession } from "~/session.server";
 
 import { createUser, getUserByEmail } from "~/models/user.server";
 import { safeRedirect, validateEmail } from "~/utils";
+import { useTranslation } from "react-i18next";
+import i18next from "~/i18next.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
+  const t = await i18next.getFixedT(request, "common");
+  const title = t("signup");
   const userId = await getUserId(request);
   if (userId) return redirect("/");
-  return json({});
+  return json({ title });
 };
 
 interface ActionData {
@@ -27,37 +31,38 @@ interface ActionData {
 }
 
 export const action: ActionFunction = async ({ request }) => {
+  const t = await i18next.getFixedT(request);
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
   const firstName = formData.get("first-name");
-  const lastName = formData.get("last-name");
+  const lastName = formData.get("last-name") as string;
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
 
   if (!validateEmail(email)) {
     return json<ActionData>(
-      { errors: { email: "Email is invalid" } },
+      { errors: { email: t("invalidEmail") } },
       { status: 400 }
     );
   }
 
   if (typeof password !== "string") {
     return json<ActionData>(
-      { errors: { password: "Password is required" } },
+      { errors: { password: t("passwordRequired") } },
       { status: 400 }
     );
   }
 
   if (password.length < 8) {
     return json<ActionData>(
-      { errors: { password: "Password is too short" } },
+      { errors: { password: t("passwordTooShort") } },
       { status: 400 }
     );
   }
 
   if (typeof firstName !== "string") {
     return json<ActionData>(
-      { errors: { password: "First name is required" } },
+      { errors: { password: t("firstNameRequired") } },
       { status: 400 }
     );
   }
@@ -65,7 +70,7 @@ export const action: ActionFunction = async ({ request }) => {
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
     return json<ActionData>(
-      { errors: { email: "A user already exists with this email" } },
+      { errors: { email: t("alreadyExists") } },
       { status: 400 }
     );
   }
@@ -80,13 +85,14 @@ export const action: ActionFunction = async ({ request }) => {
   });
 };
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({ data }) => {
   return {
-    title: "Sign Up",
+    title: data.title,
   };
 };
 
 export default function Join() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
   const actionData = useActionData() as ActionData;
@@ -113,7 +119,7 @@ export default function Join() {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700"
             >
-              Email address
+              {t("email")}
             </label>
             <div className="mt-1">
               <input
@@ -141,7 +147,7 @@ export default function Join() {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700"
             >
-              Password
+              {t("password")}
             </label>
             <div className="mt-1">
               <input
@@ -167,7 +173,7 @@ export default function Join() {
               htmlFor="first-name"
               className="block text-sm font-medium text-gray-700"
             >
-              First name
+              {t("firstName")}
             </label>
             <div className="mt-1">
               <input
@@ -193,7 +199,7 @@ export default function Join() {
               htmlFor="last-name"
               className="block text-sm font-medium text-gray-700"
             >
-              Last name
+              {t("lastName")}
             </label>
             <div className="mt-1">
               <input
@@ -211,11 +217,11 @@ export default function Join() {
             type="submit"
             className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
           >
-            Create Account
+            {t("signup")}
           </button>
           <div className="flex items-center justify-center">
             <div className="text-center text-sm text-gray-500">
-              Already have an account?{" "}
+              {t("alreadyHaveAccount")}{" "}
               <Link
                 className="text-blue-500 underline"
                 to={{
@@ -223,7 +229,7 @@ export default function Join() {
                   search: searchParams.toString(),
                 }}
               >
-                Log in
+                {t("login")}
               </Link>
             </div>
           </div>

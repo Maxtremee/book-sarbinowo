@@ -1,4 +1,5 @@
 import { Stack, Text } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import { checkCurrentOccupant } from "~/models/reservation.server";
 
 export default function CurrentOccupant({
@@ -6,17 +7,20 @@ export default function CurrentOccupant({
 }: {
   reservation: Awaited<ReturnType<typeof checkCurrentOccupant>>;
 }) {
+  const { t } = useTranslation();
   return reservation ? (
     <Stack align="center" spacing={0}>
       <Text>
-        Currently in apartment: {reservation.user.firstName}{" "}
+        {t("currentlyInApartment")}: {reservation.user.firstName}{" "}
         {reservation.user?.lastName}
       </Text>
       <Text>
-        Since {new Date(reservation.since).toLocaleString()} until {new Date(reservation.until).toLocaleString()}
+        {t("since")} {new Date(reservation.since).toLocaleString()}{" "}
+        {t("until").toLowerCase()}{" "}
+        {new Date(reservation.until).toLocaleString()}
       </Text>
     </Stack>
   ) : (
-    <Text align="center">Apartment is unoccupied</Text>
+    <Text align="center">{t("apartmentUnoccupied")}</Text>
   );
 }

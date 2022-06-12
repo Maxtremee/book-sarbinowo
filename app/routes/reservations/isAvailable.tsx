@@ -1,5 +1,4 @@
 import {
-  ActionFunction,
   json,
   LoaderFunction,
 } from "@remix-run/server-runtime";

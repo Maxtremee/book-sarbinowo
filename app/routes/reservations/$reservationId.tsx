@@ -11,6 +11,8 @@ import type { Reservation } from "~/models/reservation.server";
 import { getReservation, cancelReservation } from "~/models/reservation.server";
 import { requireUserId } from "~/session.server";
 import GoBackButton from "~/components/GoBackButton";
+import { useTranslation } from "react-i18next";
+import { useLocale } from "remix-i18next";
 
 type LoaderData = {
   reservation: Reservation;
@@ -40,6 +42,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export default function ReservationDetailsPage() {
+  const { t } = useTranslation();
   const [cancelOpen, setCancelOpen] = useState(false);
 
   const { reservation } = useLoaderData() as LoaderData;
@@ -63,19 +66,23 @@ export default function ReservationDetailsPage() {
         />
         <div>
           <h3 className="text-2xl font-bold">
-            Since: {since.toDate().toLocaleString()}
+            {t("since")}: {since.toDate().toLocaleString()}
           </h3>
           <h3 className="text-2xl font-bold">
-            Until: {until.toDate().toLocaleString()}
+            {t("until")}: {until.toDate().toLocaleString()}
           </h3>
           <div className="py-6">
-            Guests:{" "}
+            {t("guests")}:{" "}
             {guests?.map((guest) => (
               <Badge key={guest}>{guest}</Badge>
             ))}
           </div>
-          <p>Created at: {created.toDate().toLocaleString()}</p>
-          <p>Last updated at: {updated.toDate().toLocaleString()}</p>
+          <p>
+            {t("created")}: {created.toDate().toLocaleString()}
+          </p>
+          <p>
+            {t("updated")}: {updated.toDate().toLocaleString()}
+          </p>
         </div>
       </div>
       <hr className="my-4" />
@@ -84,41 +91,41 @@ export default function ReservationDetailsPage() {
         {until.isAfter(dayjs()) && (
           <Link
             to={`/reservations/change/${reservation.id}`}
-            className="rounded bg-yellow-500  py-2 px-4 text-white hover:bg-yellow-600 focus:bg-yellow-400"
+            className="rounded bg-yellow-500 py-2 px-4 text-white hover:bg-yellow-600 focus:bg-yellow-400"
           >
-            Change
+            {t("change")}
           </Link>
         )}
+        <button
+          type="submit"
+          className="rounded bg-red-500 py-2 px-4 text-white hover:bg-red-600 focus:bg-red-400"
+          onClick={() => setCancelOpen(true)}
+        >
+          {t("cancel")}
+        </button>
         <Modal
           opened={cancelOpen}
           onClose={() => setCancelOpen(false)}
           withCloseButton={false}
-          title="Are you sure you want to cancel your reservation?"
+          title={t("cancelReservationConfirm")}
         >
           <Group position="center">
             <button
               onClick={() => setCancelOpen(false)}
               className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
             >
-              No
+              {t("no")}
             </button>
             <Form method="post">
               <button
                 type="submit"
                 className="rounded bg-red-500  py-2 px-4 text-white hover:bg-red-600 focus:bg-red-400"
               >
-                Yes
+                {t("yes")}
               </button>
             </Form>
           </Group>
         </Modal>
-        <button
-          type="submit"
-          className="rounded bg-red-500  py-2 px-4 text-white hover:bg-red-600 focus:bg-red-400"
-          onClick={() => setCancelOpen(true)}
-        >
-          Cancel
-        </button>
       </div>
     </>
   );

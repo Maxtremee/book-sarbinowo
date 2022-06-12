@@ -1,5 +1,9 @@
-import { useEffect, useState } from "react";
-import type { ActionFunction, MetaFunction } from "@remix-run/node";
+import { useEffect } from "react";
+import type {
+  ActionFunction,
+  MetaFunction,
+  LoaderFunction,
+} from "@remix-run/node";
 import { Button, Group, Text, TextInput } from "@mantine/core";
 import { DateRangePicker, TimeInput } from "@mantine/dates";
 import { formList, useForm } from "@mantine/form";
@@ -15,6 +19,9 @@ import {
 import { requireUserId } from "~/session.server";
 import { useUser } from "~/utils";
 import GoBackButton from "~/components/GoBackButton";
+import i18next from "~/i18next.server";
+import { useTranslation } from "react-i18next";
+import { useLocale } from "remix-i18next";
 
 type MakeReservationErrorData = {
   errors?: {
@@ -24,8 +31,8 @@ type MakeReservationErrorData = {
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
+  const t = await i18next.getFixedT(request, "common");
   const userId = await requireUserId(request);
-
   const formData = await request.formData();
   const since = formData.get("since");
   const until = formData.get("until");
@@ -33,49 +40,49 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   if (typeof since !== "string") {
     return json<MakeReservationErrorData>(
-      { errors: { date: "Since date is required" } },
+      { errors: { date: t("sinceDateRequired") } },
       { status: 400 }
     );
   }
 
   if (dayjs(since) < dayjs().startOf("day")) {
     return json<MakeReservationErrorData>(
-      { errors: { date: "Start of stay cannot be earlier than today" } },
+      { errors: { date: t("startEarlierError") } },
       { status: 400 }
     );
   }
 
   if (typeof until !== "string") {
     return json<MakeReservationErrorData>(
-      { errors: { date: "Until date is required" } },
+      { errors: { date: t("untilDateRequired") } },
       { status: 400 }
     );
   }
 
   if (dayjs(until) < dayjs().add(1, "day")) {
     return json<MakeReservationErrorData>(
-      { errors: { date: "End of stay cannot be earlier than tommorrow" } },
+      { errors: { date: t("endEarlierError") } },
       { status: 400 }
     );
   }
 
   if (!checkAvailability({ since: new Date(since), until: new Date(until) })) {
     return json<MakeReservationErrorData>(
-      { errors: { date: "The apartment is booked during this time" } },
+      { errors: { date: t("apartmentOccupied") } },
       { status: 400 }
     );
   }
 
   if (typeof guests !== "string" || !guests) {
     return json<MakeReservationErrorData>(
-      { errors: { guests: "At least one guest is required" } },
+      { errors: { guests: t("onGuestRequired") } },
       { status: 400 }
     );
   }
 
   if (new Array(JSON.parse(guests)).length < 1) {
     return json<MakeReservationErrorData>(
-      { errors: { guests: "At least one guest is required" } },
+      { errors: { guests: t("onGuestRequired") } },
       { status: 400 }
     );
   }
@@ -90,9 +97,15 @@ export const action: ActionFunction = async ({ request, params }) => {
   return redirect(`/reservations/${reservation.id}`);
 };
 
-export const meta: MetaFunction = () => {
+export const loader: LoaderFunction = async ({ request }) => {
+  const t = await i18next.getFixedT(request, "common");
+  const title = t("newReservation");
+  return json({ title });
+};
+
+export const meta: MetaFunction = ({ data }) => {
   return {
-    title: "New reservation",
+    title: data.title,
   };
 };
 
@@ -111,24 +124,18 @@ const getSinceUntil = (arrivalHour: Date, leaveHour: Date, stay: Date[]) => {
   return { since, until };
 };
 
-interface Availability {
-  message: string;
-  color: string;
-}
-
-const showAvailability = (fetcher: any): Availability => {
+const showAvailability = (fetcher: any): { message: string; color: string } => {
   switch (fetcher.state) {
     case "submitting":
       return {
-        message: "Checking availability...",
+        message: "checkingAvailability",
         color: "text-yellow-400",
       };
     case "idle":
       return fetcher.data?.isAvailable
-        ? { message: "Apartment is available", color: "text-green-400" }
+        ? { message: "apartmentAvailable", color: "text-green-400" }
         : {
-            message:
-              "Apartment is occupied during this time. Try with different dates",
+            message: "apartmentOccupied",
             color: "text-red-400",
           };
     default:
@@ -137,6 +144,7 @@ const showAvailability = (fetcher: any): Availability => {
 };
 
 export default function NewNotePage() {
+  const { t } = useTranslation();
   const actionData = useActionData() as MakeReservationErrorData;
   const fetcher = useFetcher();
   const submit = useSubmit();
@@ -207,17 +215,16 @@ export default function NewNotePage() {
 
   return (
     <Form onSubmit={handleSubmit} className="flex w-full flex-col gap-4">
-      {/* <div className="flex items-start gap-3"></div> */}
       <Group>
         <GoBackButton />
       </Group>
       <Group mb="xs">
-        <Text weight={500}>Length of stay</Text>
+        <Text weight={500}>{t("lengthOfStay")}</Text>
       </Group>
       <Group>
         <DateRangePicker
           required
-          label="Pick dates range"
+          label={t("pickDatesLabel")}
           amountOfMonths={2}
           className="grow"
           error={actionData?.errors?.date}
@@ -226,25 +233,25 @@ export default function NewNotePage() {
         />
         <TimeInput
           required
-          label="Arrival time"
+          label={t("arrival")}
           clearable
           {...form.getInputProps("arrival")}
         />
         <TimeInput
           required
-          label="Leave time"
+          label={t("leave")}
           clearable
           {...form.getInputProps("leave")}
         />
       </Group>
 
       <Text className={`${availability.color} text-right`}>
-        {availability.message}
+        {t(availability.message)}
       </Text>
 
       <div>
         <Group mb="xs">
-          <Text weight={500}>Guests</Text>
+          <Text weight={500}>{t("guests")}</Text>
         </Group>
 
         {form.values.guests.map((item, index) => (
@@ -260,7 +267,7 @@ export default function NewNotePage() {
               className="rounded bg-red-500 py-2 px-4 text-white hover:bg-red-600 focus:bg-red-400"
               onClick={(event: any) => handleRemoveGuest(event, index)}
             >
-              Delete
+              {t("delete")}
             </Button>
           </Group>
         ))}
@@ -270,7 +277,7 @@ export default function NewNotePage() {
             className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
             onClick={handleAddGuest}
           >
-            + Add guest
+            + {t("addGuest")}
           </Button>
         </Group>
       </div>
@@ -281,7 +288,7 @@ export default function NewNotePage() {
           className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
           disabled={!fetcher.data?.isAvailable || form.values.guests.length < 1}
         >
-          Save
+          {t("save")}
         </Button>
       </Group>
     </Form>

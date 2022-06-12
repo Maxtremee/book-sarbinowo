@@ -45,11 +45,16 @@
     "@remix-run/server-runtime": "^1.4.3",
     "bcryptjs": "^2.4.3",
     "dayjs": "^1.11.2",
+    "i18next": "^21.8.9",
+    "i18next-browser-languagedetector": "^6.1.4",
+    "i18next-fs-backend": "^1.1.4",
+    "i18next-http-backend": "^1.4.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-i18next": "^11.17.1",
     "remix": "^1.4.3",
-    "tiny-invariant": "^1.2.0",
-    "zod": "^3.17.3"
+    "remix-i18next": "^4.1.1",
+    "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^6.1.1",
@@ -62,6 +67,7 @@
     "@testing-library/user-event": "^14.0.4",
     "@types/bcryptjs": "^2.4.2",
     "@types/eslint": "^8.4.1",
+    "@types/i18next-fs-backend": "^1.1.2",
     "@types/node": "^17.0.23",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",

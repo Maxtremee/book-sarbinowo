@@ -59,5 +59,7 @@
   "CANCELED": "Canceled",
   "guest": "Guest",
   "arrival": "Arrival time",
-  "leave": "Leave time"
+  "leave": "Leave time",
+  "guestNamePlaceholder": "John Doe",
+  "noAccount": "Don't have an account?"
 }

@@ -57,5 +57,8 @@
   "CANCELED": "Anulowana",
   "guest": "Gość",
   "arrival": "Czas przyjazdu",
-  "leave": "Czas wyjazdu"
+  "leave": "Czas wyjazdu",
+  "guestNamePlaceholder": "Jan Kowalski",
+  "noAccount": "Nie masz konta?"
+
 }

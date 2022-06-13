@@ -4,7 +4,7 @@ import type {
   MetaFunction,
   LoaderFunction,
 } from "@remix-run/node";
-import { Button, Group, Text, TextInput } from "@mantine/core";
+import { Button, Group, Stack, Text, TextInput } from "@mantine/core";
 import { DateRangePicker, TimeInput } from "@mantine/dates";
 import { formList, useForm } from "@mantine/form";
 import { randomId } from "@mantine/hooks";
@@ -21,7 +21,6 @@ import { useUser } from "~/utils";
 import GoBackButton from "~/components/GoBackButton";
 import i18next from "~/i18next.server";
 import { useTranslation } from "react-i18next";
-import { useLocale } from "remix-i18next";
 
 type MakeReservationErrorData = {
   errors?: {
@@ -59,12 +58,12 @@ export const action: ActionFunction = async ({ request, params }) => {
     );
   }
 
-  if (dayjs(until) < dayjs().add(1, "day")) {
-    return json<MakeReservationErrorData>(
-      { errors: { date: t("endEarlierError") } },
-      { status: 400 }
-    );
-  }
+  // if (dayjs(until) < dayjs().add(1, "day")) {
+  //   return json<MakeReservationErrorData>(
+  //     { errors: { date: t("endEarlierError") } },
+  //     { status: 400 }
+  //   );
+  // }
 
   if (!checkAvailability({ since: new Date(since), until: new Date(until) })) {
     return json<MakeReservationErrorData>(
@@ -129,14 +128,14 @@ const showAvailability = (fetcher: any): { message: string; color: string } => {
     case "submitting":
       return {
         message: "checkingAvailability",
-        color: "text-yellow-400",
+        color: "yellow",
       };
     case "idle":
       return fetcher.data?.isAvailable
-        ? { message: "apartmentAvailable", color: "text-green-400" }
+        ? { message: "apartmentAvailable", color: "green" }
         : {
             message: "apartmentOccupied",
-            color: "text-red-400",
+            color: "red",
           };
     default:
       return { message: "", color: "" };
@@ -214,83 +213,77 @@ export default function NewNotePage() {
   }, [form.values.stay]);
 
   return (
-    <Form onSubmit={handleSubmit} className="flex w-full flex-col gap-4">
-      <Group>
-        <GoBackButton />
-      </Group>
-      <Group mb="xs">
+    <Form onSubmit={handleSubmit}>
+      <Stack>
+        <GoBackButton style={{ width: "5rem" }} />
         <Text weight={500}>{t("lengthOfStay")}</Text>
-      </Group>
-      <Group>
-        <DateRangePicker
-          required
-          label={t("pickDatesLabel")}
-          amountOfMonths={2}
-          className="grow"
-          error={actionData?.errors?.date}
-          excludeDate={(date) => date < dayjs().subtract(1, "day").toDate()}
-          {...form.getInputProps("stay")}
-        />
-        <TimeInput
-          required
-          label={t("arrival")}
-          clearable
-          {...form.getInputProps("arrival")}
-        />
-        <TimeInput
-          required
-          label={t("leave")}
-          clearable
-          {...form.getInputProps("leave")}
-        />
-      </Group>
-
-      <Text className={`${availability.color} text-right`}>
-        {t(availability.message)}
-      </Text>
-
-      <div>
-        <Group mb="xs">
-          <Text weight={500}>{t("guests")}</Text>
+        <Group>
+          <DateRangePicker
+            style={{ flexGrow: 1 }}
+            required
+            label={t("pickDatesLabel")}
+            amountOfMonths={2}
+            error={actionData?.errors?.date}
+            excludeDate={(date) => date < dayjs().subtract(1, "day").toDate()}
+            {...form.getInputProps("stay")}
+          />
+          <Group>
+            <TimeInput
+              required
+              label={t("arrival")}
+              clearable
+              {...form.getInputProps("arrival")}
+            />
+            <TimeInput
+              required
+              label={t("leave")}
+              clearable
+              {...form.getInputProps("leave")}
+            />
+          </Group>
         </Group>
 
-        {form.values.guests.map((item, index) => (
-          <Group key={item.key} mt="xs">
-            <TextInput
-              required
-              className="grow"
-              placeholder="John Doe"
-              error={actionData?.errors?.guests}
-              {...form.getListInputProps("guests", index, "name")}
-            />
-            <Button
-              className="rounded bg-red-500 py-2 px-4 text-white hover:bg-red-600 focus:bg-red-400"
-              onClick={(event: any) => handleRemoveGuest(event, index)}
-            >
-              {t("delete")}
-            </Button>
-          </Group>
-        ))}
+        <Text color={availability.color} align="right">
+          {t(availability.message)}
+        </Text>
 
-        <Group position="center" mt="md">
+        <Text weight={500}>{t("guests")}</Text>
+
+        <Stack spacing="xs" align="stretch">
+          {form.values.guests.map((item, index) => (
+            <Group key={item.key}>
+              <TextInput
+                style={{ flexGrow: 1 }}
+                required
+                placeholder={t("guestNamePlaceholder")}
+                error={actionData?.errors?.guests}
+                {...form.getListInputProps("guests", index, "name")}
+              />
+              <Button
+                color="red"
+                onClick={(event: any) => handleRemoveGuest(event, index)}
+              >
+                {t("delete")}
+              </Button>
+            </Group>
+          ))}
+        </Stack>
+
+        <Group position="center">
+          <Button onClick={handleAddGuest}>+ {t("addGuest")}</Button>
+        </Group>
+
+        <Group position="center">
           <Button
-            className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-            onClick={handleAddGuest}
+            type="submit"
+            disabled={
+              !fetcher.data?.isAvailable || form.values.guests.length < 1
+            }
           >
-            + {t("addGuest")}
+            {t("save")}
           </Button>
         </Group>
-      </div>
-
-      <Group position="center" mt="md">
-        <Button
-          type="submit"
-          className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-          disabled={!fetcher.data?.isAvailable || form.values.guests.length < 1}
-        >
-          {t("save")}
-        </Button>
-      </Group>
+      </Stack>
     </Form>
   );
 }

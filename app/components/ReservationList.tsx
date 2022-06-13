@@ -1,4 +1,5 @@
-import { Reservation } from "@prisma/client";
+import { Divider, Stack, Text } from "@mantine/core";
+import type { Reservation } from "@prisma/client";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import ReservationListItem from "./ReservationListItem";
@@ -21,46 +22,39 @@ export default function ReservationList({
   );
   return (
     <>
-      <p className="font-bold">{t("upcoming")}</p>
-
+      <Text weight="bold">{t("upcoming")}</Text>
       {upcoming.length === 0 ? (
-        <p className="p-4">{t("noUpcoming")}</p>
+        <Text>{t("noUpcoming")}</Text>
       ) : (
-        <ol>
+        <Stack>
           {upcoming.map((reservation) => (
-            <li key={reservation.id}>
-              <ReservationListItem {...reservation} />
-            </li>
+            <ReservationListItem key={reservation.id} {...reservation} />
           ))}
-        </ol>
+        </Stack>
       )}
-      <hr className="my-4" />
-      <p className="font-bold">{t("current")}</p>
+      <Divider />
 
+      <Text weight="bold">{t("current")}</Text>
       {current.length === 0 ? (
-        <p className="p-4">{t("noCurrent")}</p>
+        <Text>{t("noCurrent")}</Text>
       ) : (
-        <ol>
+        <Stack>
           {current.map((reservation) => (
-            <li key={reservation.id}>
-              <ReservationListItem {...reservation} />
-            </li>
+            <ReservationListItem key={reservation.id} {...reservation} />
           ))}
-        </ol>
+        </Stack>
       )}
-      <hr className="my-4" />
-      <p className="font-bold">{t("previous")}</p>
-
+      <Divider />
+      
+      <Text weight="bold">{t("previous")}</Text>
       {previous.length === 0 ? (
-        <p className="p-4">{t("noPrevious")}</p>
+        <Text>{t("noPrevious")}</Text>
       ) : (
-        <ol>
+        <Stack>
           {previous.map((reservation) => (
-            <li key={reservation.id}>
-              <ReservationListItem {...reservation} />
-            </li>
+            <ReservationListItem key={reservation.id} {...reservation} />
           ))}
-        </ol>
+        </Stack>
       )}
     </>
   );

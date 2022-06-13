@@ -6,12 +6,13 @@ import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import invariant from "tiny-invariant";
 
+import type {
+  Reservation} from "~/models/reservation.server";
 import {
   adminCancelReservation,
-  getAdminReservation,
-  Reservation,
+  getAdminReservation
 } from "~/models/reservation.server";
-import { User } from "~/models/user.server";
+import type { User } from "~/models/user.server";
 import { getUserById } from "~/models/user.server";
 import { requireAdmin } from "~/session.server";
 

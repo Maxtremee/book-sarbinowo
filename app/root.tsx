@@ -1,5 +1,4 @@
 import type {
-  LinksFunction,
   LoaderFunction,
   MetaFunction,
 } from "@remix-run/node";
@@ -13,18 +12,18 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
-
+import type {
+  ColorScheme} from "@mantine/core";
+import {
+  ColorSchemeProvider,
+  MantineProvider,
+} from "@mantine/core";
+import { useState } from "react";
 import { useChangeLanguage } from "remix-i18next";
 import { useTranslation } from "react-i18next";
 import i18next from "~/i18next.server";
 
-import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
-import { MantineProvider } from "@mantine/core";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
-};
 
 type LoaderData = {
   user: Awaited<ReturnType<typeof getUser>>;
@@ -37,7 +36,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json<LoaderData>({ locale, user });
 };
 
-export const meta: MetaFunction = ({ data }) => ({
+export const meta: MetaFunction = () => ({
   charset: "utf-8",
   title: "Book Sarbinowo",
   viewport: "width=device-width,initial-scale=1",
@@ -49,23 +48,40 @@ export default function App() {
   useChangeLanguage(locale);
 
   return (
-    <html className="h-full" lang={locale} dir={i18n.dir()}>
+    <html lang={locale} dir={i18n.dir()}>
       <head>
         <Meta />
         <Links />
       </head>
-      <body className="h-full">
-        <MantineProvider
-          theme={{ datesLocale: locale }}
-          withGlobalStyles
-          withNormalizeCSS
-        >
+      <body style={{margin: 0, padding: 0}}>
+        <MantineTheme>
           <Outlet />
           <ScrollRestoration />
           <Scripts />
           <LiveReload />
-        </MantineProvider>
+        </MantineTheme>
       </body>
     </html>
+  );
+}
+
+function MantineTheme({ children }: { children: React.ReactNode }) {
+  const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+
+  return (
+    <ColorSchemeProvider
+      colorScheme={colorScheme}
+      toggleColorScheme={toggleColorScheme}
+    >
+      <MantineProvider
+        theme={{ colorScheme }}
+        withNormalizeCSS
+        withGlobalStyles
+      >
+        {children}
+      </MantineProvider>
+    </ColorSchemeProvider>
   );
 }

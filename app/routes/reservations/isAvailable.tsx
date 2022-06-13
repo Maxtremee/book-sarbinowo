@@ -1,6 +1,7 @@
+import type {
+  LoaderFunction} from "@remix-run/server-runtime";
 import {
-  json,
-  LoaderFunction,
+  json
 } from "@remix-run/server-runtime";
 import invariant from "tiny-invariant";
 import { checkAvailability } from "~/models/reservation.server";

@@ -1,14 +1,16 @@
+import { Button } from "@mantine/core";
 import { Link } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
-export default function GoBackButton() {
-  const {t} = useTranslation()
+export default function GoBackButton({ style }: { style?: any }) {
+  const { t } = useTranslation();
   return (
-    <Link
+    <Button
+      style={style}
+      component={Link}
       to=".."
-      className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
     >
       {t("goBack")}
-    </Link>
+    </Button>
   );
 }

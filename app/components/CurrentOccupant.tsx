@@ -1,6 +1,7 @@
-import { Stack, Text } from "@mantine/core";
+import { Alert } from "@mantine/core";
 import { useTranslation } from "react-i18next";
-import { checkCurrentOccupant } from "~/models/reservation.server";
+import { InfoCircle } from "tabler-icons-react";
+import type { checkCurrentOccupant } from "~/models/reservation.server";
 
 export default function CurrentOccupant({
   reservation,
@@ -9,18 +10,19 @@ export default function CurrentOccupant({
 }) {
   const { t } = useTranslation();
   return reservation ? (
-    <Stack align="center" spacing={0}>
-      <Text>
-        {t("currentlyInApartment")}: {reservation.user.firstName}{" "}
-        {reservation.user?.lastName}
-      </Text>
-      <Text>
-        {t("since")} {new Date(reservation.since).toLocaleString()}{" "}
-        {t("until").toLowerCase()}{" "}
-        {new Date(reservation.until).toLocaleString()}
-      </Text>
-    </Stack>
+    <Alert
+      color="yellow"
+      icon={<InfoCircle />}
+      title={`${t("currentlyInApartment")}: ${reservation.user.firstName} ${
+        reservation.user?.lastName || ""
+      }`}
+    >
+      {t("since")} {new Date(reservation.since).toLocaleString()}{" "}
+      {t("until").toLowerCase()} {new Date(reservation.until).toLocaleString()}
+    </Alert>
   ) : (
-    <Text align="center">{t("apartmentUnoccupied")}</Text>
+    <Alert color="green" icon={<InfoCircle />}>
+      {t("apartmentUnoccupied")}
+    </Alert>
   );
 }

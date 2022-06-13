@@ -1,3 +1,4 @@
+import { AppShell, Button, Group, Header, Navbar, Text } from "@mantine/core";
 import { Form, Link, Outlet } from "@remix-run/react";
 import { json, LoaderFunction, MetaFunction } from "@remix-run/server-runtime";
 import { useTranslation } from "react-i18next";
@@ -22,39 +23,54 @@ export default function ReservationsPage() {
   const user = useUser();
 
   return (
-    <div className="flex h-full min-h-screen flex-col">
-      <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
-        <h1 className="text-3xl font-bold">
-          <Link to=".">{t("reservations")}</Link>
-        </h1>
-        <p>
-          {t("welcome")}, {user.firstName} {user?.lastName}
-        </p>
-        <div className="flex items-center justify-center gap-4">
-          {user.role === "ADMIN" && (
-            <Link
-              to="/admin"
-              className="rounded bg-slate-600 py-2 px-4 text-blue-100 hover:bg-blue-500 active:bg-blue-600"
+    <AppShell
+      padding="md"
+      header={
+        <Header
+          height="max(100%, 10vh)"
+          p="md"
+          style={{
+            backgroundColor: "#1E2A3B",
+            alignItems: "center",
+          }}
+        >
+          <Group noWrap={false} sx={{ height: "100%" }} position="apart">
+            <Text
+              style={{ fontSize: "1.875rem" }}
+              weight="bolder"
+              color="white"
+              component={Link}
+              to="."
             >
-              {t("admin")}
-            </Link>
-          )}
-          <Form action="/logout" method="post">
-            <button
-              type="submit"
-              className="rounded bg-slate-600 py-2 px-4 text-blue-100 hover:bg-blue-500 active:bg-blue-600"
-            >
-              {t("logout")}
-            </button>
-          </Form>
-        </div>
-      </header>
-
-      <main className="flex h-full bg-white">
-        <div className="flex-1 p-6">
-          <Outlet />
-        </div>
-      </main>
-    </div>
+              {t("reservations")}
+            </Text>
+            <Text color="white">
+              {t("welcome")}, {user.firstName} {user?.lastName}
+            </Text>
+            <Group>
+              {/* {user.role === "ADMIN" && (
+                <Button component={Link} to="/admin">
+                  {t("admin")}
+                </Button>
+              )} */}
+              <Form action="/logout" method="post">
+                <Button type="submit" color="gray">
+                  {t("logout")}
+                </Button>
+              </Form>
+            </Group>
+          </Group>
+        </Header>
+      }
+      styles={(theme) => ({
+        main: {
+          height: "90vh",
+          overflow: "auto",
+          backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[8] : "",
+        },
+      })}
+    >
+      <Outlet />
+    </AppShell>
   );
 }

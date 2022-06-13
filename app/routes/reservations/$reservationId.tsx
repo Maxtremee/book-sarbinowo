@@ -1,5 +1,16 @@
 import { useState } from "react";
-import { Badge, Group, Modal } from "@mantine/core";
+import {
+  Badge,
+  Group,
+  ListItem,
+  Modal,
+  Text,
+  Title,
+  List,
+  Divider,
+  Stack,
+  Button,
+} from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -54,7 +65,7 @@ export default function ReservationDetailsPage() {
 
   return (
     <>
-      <div className="flex w-full items-start justify-start gap-8">
+      <Group noWrap={false} align="start" position="left" spacing="xl">
         <Calendar
           initialMonth={since.toDate()}
           dayStyle={(date) =>
@@ -64,69 +75,68 @@ export default function ReservationDetailsPage() {
               : {}
           }
         />
-        <div>
-          <h3 className="text-2xl font-bold">
-            {t("since")}: {since.toDate().toLocaleString()}
-          </h3>
-          <h3 className="text-2xl font-bold">
-            {t("until")}: {until.toDate().toLocaleString()}
-          </h3>
-          <div className="py-6">
-            {t("guests")}:{" "}
-            {guests?.map((guest) => (
-              <Badge key={guest}>{guest}</Badge>
-            ))}
+        <Stack>
+          <div>
+            <Title order={3}>
+              {t("since")}: {since.toDate().toLocaleString()}
+            </Title>
+            <Title order={3}>
+              {t("until")}: {until.toDate().toLocaleString()}
+            </Title>
           </div>
-          <p>
+          <Text>{t("guests")}:</Text>
+          <List withPadding>
+            {guests?.map((guest) => (
+              <ListItem key={guest}>{guest}</ListItem>
+            ))}
+          </List>
+        </Stack>
+
+        <div>
+          <Text>
             {t("created")}: {created.toDate().toLocaleString()}
-          </p>
-          <p>
+          </Text>
+          <Text>
             {t("updated")}: {updated.toDate().toLocaleString()}
-          </p>
+          </Text>
         </div>
-      </div>
-      <hr className="my-4" />
-      <div className="flex items-start gap-3">
+      </Group>
+      <Divider
+        sx={(theme) => ({
+          marginTop: theme.spacing.md,
+          marginBottom: theme.spacing.md,
+        })}
+      />
+      <Group>
         <GoBackButton />
-        {until.isAfter(dayjs()) && (
-          <Link
+        {/* {until.isAfter(dayjs()) && (
+          <Button
+            color="yellow"
+            component={Link}
             to={`/reservations/change/${reservation.id}`}
-            className="rounded bg-yellow-500 py-2 px-4 text-white hover:bg-yellow-600 focus:bg-yellow-400"
           >
             {t("change")}
-          </Link>
-        )}
-        <button
-          type="submit"
-          className="rounded bg-red-500 py-2 px-4 text-white hover:bg-red-600 focus:bg-red-400"
-          onClick={() => setCancelOpen(true)}
-        >
+          </Button>
+        )} */}
+        <Button color="red" onClick={() => setCancelOpen(true)}>
           {t("cancel")}
-        </button>
-        <Modal
-          opened={cancelOpen}
-          onClose={() => setCancelOpen(false)}
-          withCloseButton={false}
-          title={t("cancelReservationConfirm")}
-        >
-          <Group position="center">
-            <button
-              onClick={() => setCancelOpen(false)}
-              className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-            >
-              {t("no")}
-            </button>
-            <Form method="post">
-              <button
-                type="submit"
-                className="rounded bg-red-500  py-2 px-4 text-white hover:bg-red-600 focus:bg-red-400"
-              >
-                {t("yes")}
-              </button>
-            </Form>
-          </Group>
-        </Modal>
-      </div>
+        </Button>
+      </Group>
+      <Modal
+        opened={cancelOpen}
+        onClose={() => setCancelOpen(false)}
+        withCloseButton={false}
+        title={t("cancelReservationConfirm")}
+      >
+        <Group position="center">
+          <Button onClick={() => setCancelOpen(false)}>{t("no")}</Button>
+          <Form method="post">
+            <Button color="red" type="submit">
+              {t("yes")}
+            </Button>
+          </Form>
+        </Group>
+      </Modal>
     </>
   );
 }

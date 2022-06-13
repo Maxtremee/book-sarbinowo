@@ -1,4 +1,4 @@
-import { Badge, Group, Text } from "@mantine/core";
+import { Badge, Group, Paper, Text } from "@mantine/core";
 import { Reservation, ReservationState } from "@prisma/client";
 import { Link } from "@remix-run/react";
 import dayjs from "dayjs";
@@ -12,17 +12,23 @@ export default function ReservationListItem({
   guests,
 }: Reservation) {
   const { t } = useTranslation();
+
   return (
-    <Link
-      className={
-        "block rounded-md border border-transparent text-blue-500 p-4 mt-4 drop-shadow-md hover:bg-blue-50"
-      }
+    <Paper
+      sx={(theme) => ({
+        padding: theme.spacing.sm,
+        "&:hover": {
+          backgroundColor: theme.colors.gray[0],
+        },
+      })}
+      shadow="lg"
+      component={Link}
       to={id}
     >
       <Group position="apart">
         <div>
-          <Text weight={500} size="lg" className="text-inherit">
-            {dayjs(since).format("DD/MM/YYYY")}-
+          <Text weight={500} size="lg">
+            {dayjs(since).format("DD/MM/YYYY")} -{" "}
             {dayjs(until).format("DD/MM/YYYY")}
           </Text>
           <Text>
@@ -39,6 +45,6 @@ export default function ReservationListItem({
           {t(state)}
         </Badge>
       </Group>
-    </Link>
+    </Paper>
   );
 }

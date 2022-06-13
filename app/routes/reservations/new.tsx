@@ -21,7 +21,6 @@ import { useUser } from "~/utils";
 import GoBackButton from "~/components/GoBackButton";
 import i18next from "~/i18next.server";
 import { useTranslation } from "react-i18next";
-import { useLocale } from "remix-i18next";
 
 type MakeReservationErrorData = {
   errors?: {

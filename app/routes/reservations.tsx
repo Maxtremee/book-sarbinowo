@@ -1,6 +1,7 @@
-import { AppShell, Button, Group, Header, Navbar, Text } from "@mantine/core";
+import { AppShell, Button, Group, Header, Text } from "@mantine/core";
 import { Form, Link, Outlet } from "@remix-run/react";
-import { json, LoaderFunction, MetaFunction } from "@remix-run/server-runtime";
+import type { LoaderFunction, MetaFunction } from "@remix-run/server-runtime";
+import { json } from "@remix-run/server-runtime";
 import { useTranslation } from "react-i18next";
 import i18next from "~/i18next.server";
 

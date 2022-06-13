@@ -1,4 +1,5 @@
-import { User, Reservation, ReservationState, Role } from "@prisma/client";
+import type { User, Reservation} from "@prisma/client";
+import { ReservationState } from "@prisma/client";
 import dayjs from "dayjs";
 
 import { prisma } from "~/db.server";

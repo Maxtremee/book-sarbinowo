@@ -10,7 +10,7 @@ import {
 import ReservationList from "~/components/ReservationList";
 import CurrentOccupant from "~/components/CurrentOccupant";
 import { useTranslation } from "react-i18next";
-import { Button, Group, Stack, Text } from "@mantine/core";
+import { Button, Stack, Text } from "@mantine/core";
 
 type LoaderData = {
   reservationListItems: Awaited<ReturnType<typeof getUserReservations>>;

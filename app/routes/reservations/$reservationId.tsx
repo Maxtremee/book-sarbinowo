@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Badge,
   Group,
   ListItem,
   Modal,
@@ -14,7 +13,7 @@ import {
 import { Calendar } from "@mantine/dates";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
+import { Form, useCatch, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import invariant from "tiny-invariant";
 
@@ -23,7 +22,6 @@ import { getReservation, cancelReservation } from "~/models/reservation.server";
 import { requireUserId } from "~/session.server";
 import GoBackButton from "~/components/GoBackButton";
 import { useTranslation } from "react-i18next";
-import { useLocale } from "remix-i18next";
 
 type LoaderData = {
   reservation: Reservation;

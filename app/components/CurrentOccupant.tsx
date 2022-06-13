@@ -1,7 +1,7 @@
-import { Alert, Stack, Text } from "@mantine/core";
+import { Alert } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { InfoCircle } from "tabler-icons-react";
-import { checkCurrentOccupant } from "~/models/reservation.server";
+import type { checkCurrentOccupant } from "~/models/reservation.server";
 
 export default function CurrentOccupant({
   reservation,

@@ -12,8 +12,9 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
+import type {
+  ColorScheme} from "@mantine/core";
 import {
-  ColorScheme,
   ColorSchemeProvider,
   MantineProvider,
 } from "@mantine/core";

@@ -1,5 +1,6 @@
 import { Badge, Group, Paper, Text } from "@mantine/core";
-import { Reservation, ReservationState } from "@prisma/client";
+import type { Reservation} from "@prisma/client";
+import { ReservationState } from "@prisma/client";
 import { Link } from "@remix-run/react";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";

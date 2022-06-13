@@ -1,7 +1,9 @@
 import { useLoaderData } from "@remix-run/react";
-import { json, LoaderFunction } from "@remix-run/server-runtime";
+import type { LoaderFunction } from "@remix-run/server-runtime";
+import { json } from "@remix-run/server-runtime";
 import invariant from "tiny-invariant";
-import { getReservation, Reservation } from "~/models/reservation.server";
+import type { Reservation } from "~/models/reservation.server";
+import { getReservation } from "~/models/reservation.server";
 import { requireUserId } from "~/session.server";
 
 type LoaderData = {

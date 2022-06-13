@@ -1,6 +1,7 @@
-import { Box, Button, Center, Group, Loader, Paper, Text } from "@mantine/core";
+import { Button, Center, Group, Loader, Paper, Text } from "@mantine/core";
 import { Link } from "@remix-run/react";
-import { json, LoaderFunction, MetaFunction } from "@remix-run/server-runtime";
+import type { LoaderFunction, MetaFunction } from "@remix-run/server-runtime";
+import { json } from "@remix-run/server-runtime";
 import { useTranslation } from "react-i18next";
 import i18next from "~/i18next.server";
 

@@ -1,5 +1,5 @@
 import { Divider, Stack, Text } from "@mantine/core";
-import { Reservation } from "@prisma/client";
+import type { Reservation } from "@prisma/client";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import ReservationListItem from "./ReservationListItem";

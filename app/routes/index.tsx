@@ -1,8 +1,9 @@
-import { Button, Center, Group, Loader, Paper, Text } from "@mantine/core";
+import { Button, Center, Group, Loader, Stack, Text } from "@mantine/core";
 import { Link } from "@remix-run/react";
 import type { LoaderFunction, MetaFunction } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { useTranslation } from "react-i18next";
+import TrelloLink from "~/components/TrelloLink";
 import i18next from "~/i18next.server";
 
 import { useOptionalUser } from "~/utils";
@@ -34,39 +35,45 @@ export default function Index() {
   }
 
   return (
-    <Center style={{ height: "100vh" }} component="main">
-      <Paper shadow="xl" radius="md" p="xl">
-        <Text
-          component="h1"
-          align="center"
-          weight="bold"
-          style={{ fontSize: "3rem" }}
-          transform="uppercase"
-          variant="gradient"
-          gradient={{ from: "blue", to: "aquamarine", deg: 45 }}
-        >
-          {t("app")}
-        </Text>
-        {user ? (
-          <Button
-            color="blue"
-            variant="subtle"
-            component={Link}
-            to="/reservations"
+    <>
+      <Center style={{ height: "95vh" }} component="main">
+        <Stack align="center">
+          <Text
+            weight="bold"
+            align="center"
+            style={{ fontSize: "3rem" }}
+            transform="uppercase"
+            variant="gradient"
+            gradient={{ from: "blue", to: "aquamarine", deg: 45 }}
           >
-            {t("viewReservations")} {user.email}
-          </Button>
-        ) : (
+            {t("app")}
+          </Text>
           <Group position="center">
-            <Button color="blue" component={Link} to="/join">
-              {t("signup")}
-            </Button>{" "}
-            <Button color="blue" component={Link} to="/login">
-              {t("login")}
-            </Button>
+            {user ? (
+              <Button
+                color="blue"
+                variant="subtle"
+                component={Link}
+                to="/reservations"
+              >
+                {t("viewReservations")} {user.email}
+              </Button>
+            ) : (
+              <>
+                <Button color="blue" component={Link} to="/join">
+                  {t("signup")}
+                </Button>{" "}
+                <Button color="blue" component={Link} to="/login">
+                  {t("login")}
+                </Button>
+              </>
+            )}
           </Group>
-        )}
-      </Paper>
-    </Center>
+        </Stack>
+      </Center>
+      <Center style={{ height: "5vh" }} component="footer">
+        <TrelloLink />
+      </Center>
+    </>
   );
 }

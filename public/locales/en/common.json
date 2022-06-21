@@ -61,5 +61,6 @@
   "arrival": "Arrival time",
   "leave": "Leave time",
   "guestNamePlaceholder": "John Doe",
-  "noAccount": "Don't have an account?"
+  "noAccount": "Don't have an account?",
+  "idea": "Have an idea for a feature or improvement? Click here"
 }

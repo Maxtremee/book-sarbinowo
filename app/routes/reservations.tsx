@@ -11,11 +11,12 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
-import { Form, Link, Outlet } from "@remix-run/react";
+import { Form, Link, NavLink, Outlet } from "@remix-run/react";
 import type { LoaderFunction, MetaFunction } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Plus } from "tabler-icons-react";
 import TrelloLink from "~/components/TrelloLink";
 import i18next from "~/i18next.server";
 
@@ -57,15 +58,15 @@ export default function ReservationsPage() {
       navbarOffsetBreakpoint="sm"
       navbar={
         <Navbar
-          p="md"
+          p="xs"
           hiddenBreakpoint="sm"
           hidden={!opened}
-          width={{ sm: 200, lg: 300 }}
+          width={{ sm: 220, lg: 300 }}
         >
           <Stack align="flex-start">
-            <Text>
-              {t("welcome")}, {user.firstName} {user?.lastName}
-            </Text>
+            <Button leftIcon={<Plus />} component={Link} to="new" fullWidth>
+              {t("newReservation")}
+            </Button>
           </Stack>
         </Navbar>
       }
@@ -89,9 +90,7 @@ export default function ReservationsPage() {
               <Burger
                 opened={opened}
                 onClick={() => setOpened((o) => !o)}
-                size="sm"
                 mr="xl"
-                color="gray"
               />
             </MediaQuery>
 
@@ -105,6 +104,11 @@ export default function ReservationsPage() {
               >
                 {t("reservations")}
               </Text>
+              <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+                <Text align="center" color="white">
+                  {t("welcome")}, {user.firstName} {user?.lastName}
+                </Text>
+              </MediaQuery>
               <Form action="/logout" method="post">
                 <Button type="submit" color="gray">
                   {t("logout")}

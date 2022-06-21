@@ -21,6 +21,7 @@ import { useUser } from "~/utils";
 import GoBackButton from "~/components/GoBackButton";
 import i18next from "~/i18next.server";
 import { useTranslation } from "react-i18next";
+import { DeviceFloppy, Plus, X } from "tabler-icons-react";
 
 type MakeReservationErrorData = {
   errors?: {
@@ -215,7 +216,7 @@ export default function NewNotePage() {
   return (
     <Form onSubmit={handleSubmit}>
       <Stack>
-        <GoBackButton style={{ width: "5rem" }} />
+        <GoBackButton />
         <Text weight={500}>{t("lengthOfStay")}</Text>
         <Group>
           <DateRangePicker
@@ -260,6 +261,7 @@ export default function NewNotePage() {
                 {...form.getListInputProps("guests", index, "name")}
               />
               <Button
+                leftIcon={<X />}
                 color="red"
                 onClick={(event: any) => handleRemoveGuest(event, index)}
               >
@@ -270,11 +272,14 @@ export default function NewNotePage() {
         </Stack>
 
         <Group position="center">
-          <Button onClick={handleAddGuest}>+ {t("addGuest")}</Button>
+          <Button leftIcon={<Plus />} onClick={handleAddGuest}>
+            {t("addGuest")}
+          </Button>
         </Group>
 
         <Group position="center">
           <Button
+            leftIcon={<DeviceFloppy />}
             type="submit"
             disabled={
               !fetcher.data?.isAvailable || form.values.guests.length < 1

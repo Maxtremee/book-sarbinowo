@@ -9,11 +9,12 @@ import {
   Divider,
   Stack,
   Button,
+  Tooltip,
 } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, useCatch, useLoaderData } from "@remix-run/react";
+import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import invariant from "tiny-invariant";
 
@@ -22,6 +23,7 @@ import { getReservation, cancelReservation } from "~/models/reservation.server";
 import { requireUserId } from "~/session.server";
 import GoBackButton from "~/components/GoBackButton";
 import { useTranslation } from "react-i18next";
+import { Settings, X } from "tabler-icons-react";
 
 type LoaderData = {
   reservation: Reservation;
@@ -107,16 +109,24 @@ export default function ReservationDetailsPage() {
       />
       <Group>
         <GoBackButton />
-        {/* {until.isAfter(dayjs()) && (
-          <Button
-            color="yellow"
-            component={Link}
-            to={`/reservations/change/${reservation.id}`}
-          >
-            {t("change")}
-          </Button>
-        )} */}
-        <Button color="red" onClick={() => setCancelOpen(true)}>
+        {until.isAfter(dayjs()) && (
+          <Tooltip label={t("notImplementedMessage")} withArrow>
+            <Button
+              disabled={true}
+              leftIcon={<Settings />}
+              color="yellow"
+              // component={Link}
+              // to={`/reservations/change/${reservation.id}`}
+            >
+              {t("change")}
+            </Button>
+          </Tooltip>
+        )}
+        <Button
+          leftIcon={<X />}
+          color="red"
+          onClick={() => setCancelOpen(true)}
+        >
           {t("cancel")}
         </Button>
       </Group>

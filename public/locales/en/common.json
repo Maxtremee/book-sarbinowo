@@ -62,5 +62,7 @@
   "leave": "Leave time",
   "guestNamePlaceholder": "John Doe",
   "noAccount": "Don't have an account?",
-  "idea": "Have an idea for a feature or improvement? Click here"
+  "idea": "Have an idea for a feature or improvement? Click here",
+  "modifyReservation": "Modify reservation",
+  "notImplementedMessage": "This function will be available in next version of the app"
 }

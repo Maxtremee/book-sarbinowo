@@ -60,5 +60,7 @@
   "leave": "Czas wyjazdu",
   "guestNamePlaceholder": "Jan Kowalski",
   "noAccount": "Nie masz konta?",
-  "idea": "Masz pomysł na nową funkcjonalność lub usprawnienie? Kliknij tutaj"
+  "idea": "Masz pomysł na nową funkcjonalność lub usprawnienie? Kliknij tutaj",
+  "modifyReservation": "Zmień rezerwację",
+  "notImplementedMessage": "Ta funkcja będzie dostępna w kolejnej wersji aplikacji"
 }

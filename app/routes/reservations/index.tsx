@@ -31,9 +31,6 @@ export default function ReservationsIndexPage() {
   return (
     <Stack justify="flex-start">
       <CurrentOccupant reservation={data.currentOccupant} />
-      <Button style={{ width: "12rem" }} component={Link} to="new">
-        + {t("newReservation")}
-      </Button>
       {data.reservationListItems.length === 0 ? (
         <Text>{t("noReservations")}</Text>
       ) : (

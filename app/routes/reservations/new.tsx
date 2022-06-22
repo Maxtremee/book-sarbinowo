@@ -59,13 +59,6 @@ export const action: ActionFunction = async ({ request, params }) => {
     );
   }
 
-  // if (dayjs(until) < dayjs().add(1, "day")) {
-  //   return json<MakeReservationErrorData>(
-  //     { errors: { date: t("endEarlierError") } },
-  //     { status: 400 }
-  //   );
-  // }
-
   if (!checkAvailability({ since: new Date(since), until: new Date(until) })) {
     return json<MakeReservationErrorData>(
       { errors: { date: t("apartmentOccupied") } },

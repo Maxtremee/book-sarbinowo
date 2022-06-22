@@ -113,6 +113,31 @@ export async function checkCurrentOccupant() {
   });
 }
 
+export async function getReservationsSince(since: Date, months = 3) {
+  const until = dayjs(since).add(months, 'months').toDate()
+  return prisma.reservation.findMany({
+    where: {
+      since: {
+        lte: until,
+      },
+      until: {
+        gte: since
+      },
+      state: {
+        equals: ReservationState.ACTIVE
+      }
+    },
+    include: {
+      user: {
+        select: {
+          firstName: true,
+          lastName: true
+        }
+      },
+    }
+  });
+}
+
 // Admin methods
 
 export function getAllReservations() {

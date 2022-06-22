@@ -36,7 +36,16 @@ export default function Index() {
 
   return (
     <>
-      <Center style={{ height: "95vh" }} component="main">
+      <Center
+        sx={(theme) => ({
+          height: "95vh",
+          [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+            height: "85vh",
+          },
+        })}
+        style={{}}
+        component="main"
+      >
         <Stack align="center">
           <Text
             weight="bold"

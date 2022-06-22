@@ -127,14 +127,6 @@ export async function getReservationsSince(since: Date, months = 3) {
         equals: ReservationState.ACTIVE
       }
     },
-    include: {
-      user: {
-        select: {
-          firstName: true,
-          lastName: true
-        }
-      },
-    }
   });
 }
 

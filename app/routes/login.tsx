@@ -114,12 +114,12 @@ export default function LoginPage() {
           align="stretch"
           justify="center"
           spacing="md"
-          sx={{
+          sx={(theme) => ({
             width: "35vw",
-            "@media (max-width: 850px)": {
+            [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
               width: "85vw",
             },
-          }}
+          })}
         >
           <TextInput
             label={t("email")}
@@ -142,7 +142,7 @@ export default function LoginPage() {
             ref={passwordRef}
             name="password"
             type="password"
-            autoComplete="new-password"
+            autoComplete="current-password"
             aria-invalid={actionData?.errors?.password ? true : undefined}
             aria-describedby="password-error"
           />

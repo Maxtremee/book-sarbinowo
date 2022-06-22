@@ -1,5 +1,6 @@
 import {
   AppShell,
+  Box,
   Burger,
   Button,
   Footer,
@@ -9,9 +10,8 @@ import {
   Navbar,
   Stack,
   Text,
-  useMantineTheme,
 } from "@mantine/core";
-import { Form, Link, NavLink, Outlet } from "@remix-run/react";
+import { Form, Link, Outlet } from "@remix-run/react";
 import type { LoaderFunction, MetaFunction } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { useState } from "react";
@@ -120,12 +120,23 @@ export default function ReservationsPage() {
       }
       styles={(theme) => ({
         main: {
-          maxWidth: theme.breakpoints.xl,
-          overflow: "auto",
+          overflowY: "auto",
+          [`@media (min-width: ${theme.breakpoints.xl}px)`]: {
+            display: "flex",
+            justifyContent: "center",
+          },
         },
       })}
     >
-      <Outlet />
+      <Box
+        sx={(theme) => ({
+          [`@media (min-width: ${theme.breakpoints.xl}px)`]: {
+            width: theme.breakpoints.xl,
+          },
+        })}
+      >
+        <Outlet />
+      </Box>
     </AppShell>
   );
 }

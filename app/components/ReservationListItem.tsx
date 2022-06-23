@@ -24,7 +24,7 @@ export default function ReservationListItem({
       })}
       shadow="lg"
       component={Link}
-      to={id}
+      to={`/reservations/${id}`}
     >
       <Group position="apart">
         <div>

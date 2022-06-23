@@ -1,4 +1,4 @@
-import type { User, Reservation} from "@prisma/client";
+import type { User, Reservation } from "@prisma/client";
 import { ReservationState } from "@prisma/client";
 import dayjs from "dayjs";
 
@@ -101,31 +101,45 @@ export async function checkCurrentOccupant() {
         lte: today,
       },
       until: {
-        gte: today
+        gte: today,
       },
       state: {
-        equals: ReservationState.ACTIVE
-      }
+        equals: ReservationState.ACTIVE,
+      },
     },
     include: {
-      user: true
-    }
+      user: true,
+    },
   });
 }
 
 export async function getReservationsSince(since: Date, months = 3) {
-  const until = dayjs(since).add(months, 'months').toDate()
+  const until = dayjs(since).add(months, "months").toDate();
   return prisma.reservation.findMany({
     where: {
       since: {
         lte: until,
       },
       until: {
-        gte: since
+        gte: since,
       },
       state: {
-        equals: ReservationState.ACTIVE
-      }
+        equals: ReservationState.ACTIVE,
+      },
+    },
+  });
+}
+
+export async function getUsersClosestReservation(userId: User["id"]) {
+  return prisma.reservation.findFirst({
+    where: {
+      userId,
+      since: {
+        gte: new Date(),
+      },
+    },
+    orderBy: {
+      since: "asc",
     },
   });
 }

@@ -66,5 +66,7 @@
   "modifyReservation": "Modify reservation",
   "notImplementedMessage": "This function will be available in next version of the app",
   "history": "History",
-  "account": "Account"
+  "account": "Account",
+  "closestReservation": "Your closest reservation",
+  "calendar": "Calendar"
 }

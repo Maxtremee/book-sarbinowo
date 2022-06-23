@@ -78,9 +78,9 @@ export default function ReservationsPage() {
             <NavbarLink leftIcon={<History />} to="history">
               {t("history")}
             </NavbarLink>
-            <NavbarLink leftIcon={<Settings />} to="account">
+            {/* <NavbarLink leftIcon={<Settings />} to="account">
               {t("account")}
-            </NavbarLink>
+            </NavbarLink> */}
           </Stack>
         </Navbar>
       }

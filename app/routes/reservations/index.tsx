@@ -6,26 +6,25 @@ import { requireUserId } from "~/session.server";
 import {
   checkCurrentOccupant,
   getUserReservations,
+  getUsersClosestReservation,
 } from "~/models/reservation.server";
 import ReservationList from "~/components/ReservationList";
 import CurrentOccupant from "~/components/CurrentOccupant";
 import { useTranslation } from "react-i18next";
-import {
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Stack, Text, Title } from "@mantine/core";
 import ReservationsCalendar from "~/components/ReservationsCalendar";
+import ReservationListItem from "~/components/ReservationListItem";
 
 type LoaderData = {
-  reservationListItems: Awaited<ReturnType<typeof getUserReservations>>;
   currentOccupant: Awaited<ReturnType<typeof checkCurrentOccupant>>;
+  closestReservation: Awaited<ReturnType<typeof getUsersClosestReservation>>;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request);
-  const reservationListItems = await getUserReservations({ userId });
   const currentOccupant = await checkCurrentOccupant();
-  return json<LoaderData>({ reservationListItems, currentOccupant });
+  const closestReservation = await getUsersClosestReservation(userId);
+  return json<LoaderData>({ currentOccupant, closestReservation });
 };
 
 export default function ReservationsIndexPage() {
@@ -35,12 +34,15 @@ export default function ReservationsIndexPage() {
   return (
     <Stack justify="flex-start" align="stretch">
       <CurrentOccupant reservation={data.currentOccupant} />
+
+      <Title order={3}>{t("calendar")}</Title>
       <ReservationsCalendar />
 
-      {data.reservationListItems.length === 0 ? (
-        <Text>{t("noReservations")}</Text>
+      <Title order={3}>{t("closestReservation")}</Title>
+      {data.closestReservation ? (
+        <ReservationListItem {...data.closestReservation} />
       ) : (
-        <ReservationList reservations={data.reservationListItems} />
+        <Text>{t("noReservations")}</Text>
       )}
     </Stack>
   );

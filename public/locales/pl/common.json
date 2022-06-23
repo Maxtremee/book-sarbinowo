@@ -64,5 +64,7 @@
   "modifyReservation": "Zmień rezerwację",
   "notImplementedMessage": "Ta funkcja będzie dostępna w kolejnej wersji aplikacji",
   "history": "Historia",
-  "account": "Konto"
+  "account": "Konto",
+  "closestReservation": "Twoja najbliższa rezerwacja",
+  "calendar": "Kalendarz"
 }

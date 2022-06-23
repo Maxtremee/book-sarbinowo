@@ -37,8 +37,8 @@ const DateWithPopover = ({
 };
 
 export default function ReservationsCalendar() {
-  const isMobile = useMediaQuery("(max-width: 800px", false);
   const [month, setMonth] = useState(dayjs().startOf("month").toDate());
+  const isMobile = useMediaQuery("(max-width: 800px)", false);
   const amountOfMonths = isMobile ? 1 : 3
   const fetcher = useFetcher();
 

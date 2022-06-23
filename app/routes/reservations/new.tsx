@@ -4,7 +4,7 @@ import type {
   MetaFunction,
   LoaderFunction,
 } from "@remix-run/node";
-import { Button, Group, Stack, Text, TextInput } from "@mantine/core";
+import { Button, Group, Stack, Text, TextInput, Title } from "@mantine/core";
 import { DateRangePicker, TimeInput } from "@mantine/dates";
 import { formList, useForm } from "@mantine/form";
 import { randomId } from "@mantine/hooks";
@@ -22,6 +22,9 @@ import GoBackButton from "~/components/GoBackButton";
 import i18next from "~/i18next.server";
 import { useTranslation } from "react-i18next";
 import { DeviceFloppy, Plus, X } from "tabler-icons-react";
+import getSinceUntil from "~/utils/getSinceUntil";
+import showAvailability from "~/utils/showAvailability";
+import ReservationRangePicker from "~/components/ReservationRangePicker";
 
 type MakeReservationErrorData = {
   errors?: {
@@ -30,7 +33,7 @@ type MakeReservationErrorData = {
   };
 };
 
-export const action: ActionFunction = async ({ request, params }) => {
+export const action: ActionFunction = async ({ request }) => {
   const t = await i18next.getFixedT(request, "common");
   const userId = await requireUserId(request);
   const formData = await request.formData();
@@ -102,40 +105,6 @@ export const meta: MetaFunction = ({ data }) => {
   };
 };
 
-const getSinceUntil = (arrivalHour: Date, leaveHour: Date, stay: Date[]) => {
-  const arrival = dayjs(arrivalHour);
-  const leave = dayjs(leaveHour);
-
-  const since = dayjs(stay[0])
-    .hour(arrival.hour())
-    .minute(arrival.minute())
-    .second(0);
-  const until = dayjs(stay[1])
-    .hour(leave.hour())
-    .minute(leave.minute())
-    .second(0);
-  return { since, until };
-};
-
-const showAvailability = (fetcher: any): { message: string; color: string } => {
-  switch (fetcher.state) {
-    case "submitting":
-      return {
-        message: "checkingAvailability",
-        color: "yellow",
-      };
-    case "idle":
-      return fetcher.data?.isAvailable
-        ? { message: "apartmentAvailable", color: "green" }
-        : {
-            message: "apartmentOccupied",
-            color: "red",
-          };
-    default:
-      return { message: "", color: "" };
-  }
-};
-
 export default function NewNotePage() {
   const { t } = useTranslation();
   const actionData = useActionData() as MakeReservationErrorData;
@@ -144,7 +113,7 @@ export default function NewNotePage() {
   const user = useUser();
   const form = useForm({
     initialValues: {
-      stay: formList([new Date(), dayjs().add(7, "day").toDate()]),
+      stay: formList([new Date(), dayjs().add(1, "day").toDate()]),
       arrival: dayjs().hour(10).minute(0).toDate(),
       leave: dayjs().hour(16).minute(0).toDate(),
       guests: formList([
@@ -187,8 +156,6 @@ export default function NewNotePage() {
     submit(formData, { method: "post" });
   };
 
-  const availability = showAvailability(fetcher);
-
   // check availability
   useEffect(() => {
     if (form.values.stay[0] && form.values.stay[1]) {
@@ -206,21 +173,26 @@ export default function NewNotePage() {
     }
   }, [form.values.stay]);
 
+  const availability = showAvailability(fetcher);
+
   return (
     <Form onSubmit={handleSubmit}>
       <Stack>
         <GoBackButton />
-        <Text weight={500}>{t("lengthOfStay")}</Text>
+        <Title order={5}>{t("lengthOfStay")}</Title>
         <Group>
-          <DateRangePicker
+          <Text weight={500}>
+            {t("pickDatesLabel")}
+            <span style={{ color: "red" }}> *</span>
+          </Text>
+          <ReservationRangePicker
             style={{ flexGrow: 1 }}
-            required
-            label={t("pickDatesLabel")}
-            amountOfMonths={2}
-            error={actionData?.errors?.date}
-            excludeDate={(date) => date < dayjs().subtract(1, "day").toDate()}
+            fullWidth
             {...form.getInputProps("stay")}
           />
+          {actionData?.errors?.date && (
+            <Text color="red">{actionData?.errors?.date}</Text>
+          )}
           <Group>
             <TimeInput
               required
@@ -241,8 +213,7 @@ export default function NewNotePage() {
           {t(availability.message)}
         </Text>
 
-        <Text weight={500}>{t("guests")}</Text>
-
+        <Title order={5}>{t("guests")}</Title>
         <Stack spacing="xs" align="stretch">
           {form.values.guests.map((item, index) => (
             <Group key={item.key}>

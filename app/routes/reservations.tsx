@@ -16,7 +16,8 @@ import type { LoaderFunction, MetaFunction } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus } from "tabler-icons-react";
+import { History, Home, Old, Plus, Settings } from "tabler-icons-react";
+import NavbarLink from "~/components/NavbarLink";
 import TrelloLink from "~/components/TrelloLink";
 import i18next from "~/i18next.server";
 
@@ -58,15 +59,28 @@ export default function ReservationsPage() {
       navbarOffsetBreakpoint="sm"
       navbar={
         <Navbar
-          p="xs"
           hiddenBreakpoint="sm"
           hidden={!opened}
           width={{ sm: 220, lg: 300 }}
         >
-          <Stack align="flex-start">
-            <Button leftIcon={<Plus />} component={Link} to="new" fullWidth>
+          <Stack
+            align="flex-start"
+            sx={() => ({
+              gap: "0",
+            })}
+          >
+            <NavbarLink leftIcon={<Home />} to=".">
+              Menu
+            </NavbarLink>
+            <NavbarLink leftIcon={<Plus />} to="new">
               {t("newReservation")}
-            </Button>
+            </NavbarLink>
+            <NavbarLink leftIcon={<History />} to="history">
+              {t("history")}
+            </NavbarLink>
+            <NavbarLink leftIcon={<Settings />} to="account">
+              {t("account")}
+            </NavbarLink>
           </Stack>
         </Navbar>
       }
@@ -120,7 +134,7 @@ export default function ReservationsPage() {
       }
       styles={(theme) => ({
         main: {
-          overflowY: "auto",
+          overflow: "auto",
           [`@media (min-width: ${theme.breakpoints.xl}px)`]: {
             display: "flex",
             justifyContent: "center",

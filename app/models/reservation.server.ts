@@ -3,6 +3,7 @@ import { ReservationState } from "@prisma/client";
 import dayjs from "dayjs";
 
 import { prisma } from "~/db.server";
+import sendCancelation from "~/email/sendCancelation";
 import sendConfirmation from "~/email/sendConfirmation";
 
 export type { Reservation, ReservationState } from "@prisma/client";
@@ -16,8 +17,8 @@ export function getReservation({
   return prisma.reservation.findFirst({
     where: { id, userId },
     include: {
-      user: true
-    }
+      user: true,
+    },
   });
 }
 
@@ -48,11 +49,11 @@ export async function createReservation({
       },
     },
     include: {
-      user: true
-    }
+      user: true,
+    },
   });
-  sendConfirmation(newReservation, newReservation.user)
-  return newReservation
+  sendConfirmation(newReservation, newReservation.user);
+  return newReservation;
 }
 
 export function updateReservation({
@@ -77,10 +78,14 @@ export function updateReservation({
   });
 }
 
-export function cancelReservation({
+export async function cancelReservation({
   id,
   userId,
 }: Pick<Reservation, "id"> & { userId: User["id"] }) {
+  const oldReservation = await getReservation({ id, userId });
+  if (oldReservation && oldReservation.state !== "CANCELED") {
+    sendCancelation(oldReservation, oldReservation.user);
+  }
   return prisma.reservation.updateMany({
     where: { id, userId },
     data: {

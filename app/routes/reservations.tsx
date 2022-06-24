@@ -17,6 +17,7 @@ import { json } from "@remix-run/server-runtime";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { History, Home, Old, Plus, Settings } from "tabler-icons-react";
+import Copyright from "~/components/Copyright";
 import NavbarLink from "~/components/NavbarLink";
 import TrelloLink from "~/components/TrelloLink";
 import i18next from "~/i18next.server";
@@ -50,10 +51,11 @@ export default function ReservationsPage() {
           style={{
             display: "flex",
             justifyContent: "center",
-            alignItems: "center",
+            flexDirection: "column"
           }}
         >
           <TrelloLink />
+          <Copyright />
         </Footer>
       }
       navbarOffsetBreakpoint="sm"

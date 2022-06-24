@@ -3,6 +3,7 @@ import { Link } from "@remix-run/react";
 import type { LoaderFunction, MetaFunction } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import { useTranslation } from "react-i18next";
+import Copyright from "~/components/Copyright";
 import TrelloLink from "~/components/TrelloLink";
 import i18next from "~/i18next.server";
 
@@ -38,9 +39,9 @@ export default function Index() {
     <>
       <Center
         sx={(theme) => ({
-          height: "95vh",
+          height: "calc(100vh - 2em)",
           [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
-            height: "85vh",
+            height: "calc(90vh - 2em)",
           },
         })}
         style={{}}
@@ -80,9 +81,18 @@ export default function Index() {
           </Group>
         </Stack>
       </Center>
-      <Center style={{ height: "5vh" }} component="footer">
+      <footer
+        style={{
+          height: "2em",
+          display: "flex",
+          justifyContent: "center",
+          flexWrap: "nowrap",
+          flexDirection: "column",
+        }}
+      >
         <TrelloLink />
-      </Center>
+        <Copyright />
+      </footer>
     </>
   );
 }

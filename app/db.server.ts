@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import jobs from "./jobs";
 
 let prisma: PrismaClient;
 
@@ -12,9 +13,13 @@ declare global {
 // in production we'll have a single connection to the DB.
 if (process.env.NODE_ENV === "production") {
   prisma = new PrismaClient();
+  // run schedules
+  jobs();
 } else {
   if (!global.__db__) {
     global.__db__ = new PrismaClient();
+    // run schedules
+    jobs();
   }
   prisma = global.__db__;
   prisma.$connect();

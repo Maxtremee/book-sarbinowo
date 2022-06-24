@@ -2,11 +2,11 @@ import type { LoaderFunction } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import invariant from "tiny-invariant";
 import {
-  getReservationsSince,
+  getReservationsSinceThroughXMonths,
 } from "~/models/reservation.server";
 
 export type LoaderData = {
-  reservations: Awaited<ReturnType<typeof getReservationsSince>>;
+  reservations: Awaited<ReturnType<typeof getReservationsSinceThroughXMonths>>;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -16,7 +16,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   invariant(since, "since date not found");
 
-  const reservations = await getReservationsSince(
+  const reservations = await getReservationsSinceThroughXMonths(
     new Date(since),
     months ? parseInt(months) : undefined
   );

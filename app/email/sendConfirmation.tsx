@@ -7,7 +7,7 @@ export default async function sendConfirmation(
   user: User
 ) {
   const to = user.email;
-  const subject = "Sarbinowo: Twoja rezerwacja została potwierdzona";
+  const subject = "Sarbinowo: Twoja rezerwacja została potwierdzona ✅ ";
   const content = (
     <>
       <h5>Długość pobytu</h5>
@@ -23,5 +23,5 @@ export default async function sendConfirmation(
       </ul>
     </>
   );
-  sendMail(to, subject, renderToStaticMarkup(content));
+  sendMail([{ to, subject, html: renderToStaticMarkup(content) }]);
 }

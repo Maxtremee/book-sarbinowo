@@ -7,7 +7,7 @@ export default async function sendCancelation(
   user: User
 ) {
   const to = user.email;
-  const subject = "Sarbinowo: Twoja rezerwacja została anulowana";
+  const subject = "Sarbinowo: Twoja rezerwacja została anulowana ❌ ";
   const content = (
     <>
       <h3>Dane anulowanej rezerwacji</h3>
@@ -24,5 +24,5 @@ export default async function sendCancelation(
       </ul>
     </>
   );
-  sendMail(to, subject, renderToStaticMarkup(content));
+  sendMail([{to, subject, html: renderToStaticMarkup(content)}]);
 }

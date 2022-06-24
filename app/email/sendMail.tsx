@@ -5,24 +5,27 @@ const sender = process.env.SENDER || "";
 
 sgMail.setApiKey(key);
 
-export default async function sendMail(
-  to: string,
-  subject: string,
-  html: string
-) {
-  const message: MailDataRequired = {
-    from: sender,
-    to,
-    subject,
-    html,
-    mailSettings: {
-      sandboxMode: {
-        enable: process.env.NODE_ENV !== "production",
-      },
-    },
-  };
+export type MailContent = {
+  to: string;
+  subject: string;
+  html: string;
+};
+
+export default async function sendMail(mail: MailContent[]) {
+  const adjustedMail = mail.map(
+    (mail) =>
+      ({
+        ...mail,
+        from: sender,
+        mailSettings: {
+          sandboxMode: {
+            enable: process.env.NODE_ENV !== "production",
+          },
+        },
+      } as MailDataRequired)
+  );
   try {
-    await sgMail.send(message);
+    await sgMail.send(adjustedMail);
   } catch (error) {
     console.log(error);
   }

@@ -127,7 +127,10 @@ export async function checkCurrentOccupant() {
   });
 }
 
-export async function getReservationsSince(since: Date, months = 3) {
+export async function getReservationsSinceThroughXMonths(
+  since: Date,
+  months = 3
+) {
   const until = dayjs(since).add(months, "months").toDate();
   return prisma.reservation.findMany({
     where: {
@@ -161,8 +164,23 @@ export async function getUsersClosestReservation(userId: User["id"]) {
   });
 }
 
-// Admin methods
+export async function getReservationsInXDays(days: number) {
+  const inDays = dayjs().add(days, "days").toDate();
+  const inDaysPlusOne = dayjs(inDays).add(1, "day").toDate();
+  return prisma.reservation.findMany({
+    where: {
+      since: {
+        gte: inDays,
+        lte: inDaysPlusOne,
+      },
+    },
+    include: {
+      user: true,
+    },
+  });
+}
 
+// Admin methods
 export function getAllReservations() {
   return prisma.reservation.findMany({
     orderBy: { since: "desc" },

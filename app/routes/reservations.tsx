@@ -69,16 +69,16 @@ export default function ReservationsPage() {
               gap: "0",
             })}
           >
-            <NavbarLink leftIcon={<Home />} to=".">
+            <NavbarLink leftIcon={<Home />} to="." onClick={() => setOpened(false)}>
               Menu
             </NavbarLink>
-            <NavbarLink leftIcon={<Plus />} to="new">
+            <NavbarLink leftIcon={<Plus />} to="new" onClick={() => setOpened(false)}>
               {t("newReservation")}
             </NavbarLink>
-            <NavbarLink leftIcon={<History />} to="history">
+            <NavbarLink leftIcon={<History />} to="history" onClick={() => setOpened(false)}>
               {t("history")}
             </NavbarLink>
-            {/* <NavbarLink leftIcon={<Settings />} to="account">
+            {/* <NavbarLink leftIcon={<Settings />} to="account" onClick={() => setOpened(false)}>
               {t("account")}
             </NavbarLink> */}
           </Stack>

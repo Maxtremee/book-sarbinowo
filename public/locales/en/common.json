@@ -67,6 +67,7 @@
   "notImplementedMessage": "This function will be available in next version of the app",
   "history": "History",
   "account": "Account",
-  "closestReservation": "Your closest reservation",
-  "calendar": "Calendar"
+  "closestReservation": "Your next reservation",
+  "calendar": "Calendar",
+  "haveANiceStay": "Have a nice holiday!"
 }

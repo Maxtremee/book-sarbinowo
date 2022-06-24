@@ -65,6 +65,7 @@
   "notImplementedMessage": "Ta funkcja będzie dostępna w kolejnej wersji aplikacji",
   "history": "Historia",
   "account": "Konto",
-  "closestReservation": "Twoja najbliższa rezerwacja",
-  "calendar": "Kalendarz"
+  "closestReservation": "Twoja następna rezerwacja",
+  "calendar": "Kalendarz",
+  "haveANiceStay": "Miłego wypoczynku!"
 }

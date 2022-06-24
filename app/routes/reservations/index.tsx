@@ -5,10 +5,8 @@ import { useLoaderData } from "@remix-run/react";
 import { requireUserId } from "~/session.server";
 import {
   checkCurrentOccupant,
-  getUserReservations,
   getUsersClosestReservation,
 } from "~/models/reservation.server";
-import ReservationList from "~/components/ReservationList";
 import CurrentOccupant from "~/components/CurrentOccupant";
 import { useTranslation } from "react-i18next";
 import { Stack, Text, Title } from "@mantine/core";

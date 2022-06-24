@@ -38,6 +38,7 @@ const DateWithPopover = ({
 
 export default function ReservationsCalendar() {
   const [month, setMonth] = useState(dayjs().startOf("month").toDate());
+  const [initialLoading, setInitialLoading] = useState(true)
   const isMobile = useMediaQuery("(max-width: 800px)", false);
   const amountOfMonths = isMobile ? 1 : 3
   const fetcher = useFetcher();
@@ -61,9 +62,13 @@ export default function ReservationsCalendar() {
     fetcher.submit(params, { action: "/reservations/getReservations" });
   }, [month]);
 
+  useEffect(() => {
+    setInitialLoading(false)
+  }, [fetcher.data, setInitialLoading])
+
   return (
     <div style={{ position: "relative" }}>
-      <LoadingOverlay visible={fetcher.state !== "idle"} />
+      <LoadingOverlay visible={fetcher.state !== "idle" || initialLoading} />
       <Calendar
         dayStyle={(date) =>
           getReservationWithDate(date)

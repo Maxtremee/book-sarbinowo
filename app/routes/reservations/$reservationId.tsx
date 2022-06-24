@@ -122,13 +122,15 @@ export default function ReservationDetailsPage() {
             </Button>
           </Tooltip>
         )}
-        <Button
-          leftIcon={<X />}
-          color="red"
-          onClick={() => setCancelOpen(true)}
-        >
-          {t("cancel")}
-        </Button>
+        {reservation.state === "ACTIVE" && (
+          <Button
+            leftIcon={<X />}
+            color="red"
+            onClick={() => setCancelOpen(true)}
+          >
+            {t("cancel")}
+          </Button>
+        )}
       </Group>
       <Modal
         opened={cancelOpen}

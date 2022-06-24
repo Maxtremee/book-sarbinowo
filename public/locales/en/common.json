@@ -69,5 +69,6 @@
   "account": "Account",
   "closestReservation": "Your next reservation",
   "calendar": "Calendar",
-  "haveANiceStay": "Have a nice holiday!"
+  "haveANiceStay": "Have a nice holiday!",
+  "showCanceled": "Show canceled"
 }

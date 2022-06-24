@@ -7,7 +7,7 @@ export default function sendReminders(
 ) {
   const emailsToSend = reservations.map((reservation) => {
     const to = reservation.user.email;
-    const subject = `Sarbinowo: Twoja rezerwacja zaczyna się za ${inDays} ${inDays > 1 ? "dni" : "dzień"}!`;
+    const subject = `Sarbinowo: Twoja rezerwacja zaczyna się za ${inDays} ${inDays > 1 ? "dni" : "dzień"}! 🎉`;
     const content = (
       <>
         <h3>Przypominamy o nadchodzącej rezerwacji</h3>

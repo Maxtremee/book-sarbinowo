@@ -67,5 +67,6 @@
   "account": "Konto",
   "closestReservation": "Twoja następna rezerwacja",
   "calendar": "Kalendarz",
-  "haveANiceStay": "Miłego wypoczynku!"
+  "haveANiceStay": "Miłego wypoczynku!",
+  "showCanceled": "Pokaż anulowane"
 }

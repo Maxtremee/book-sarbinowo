@@ -151,6 +151,9 @@ export async function getUsersClosestReservation(userId: User["id"]) {
       since: {
         gte: new Date(),
       },
+      state: {
+        equals: ReservationState.ACTIVE,
+      },
     },
     orderBy: {
       since: "asc",

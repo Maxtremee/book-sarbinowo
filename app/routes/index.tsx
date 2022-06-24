@@ -39,9 +39,9 @@ export default function Index() {
     <>
       <Center
         sx={(theme) => ({
-          height: "calc(100vh - 2em)",
+          height: "calc(100vh - 3em)",
           [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
-            height: "calc(90vh - 2em)",
+            height: "calc(93vh - 3em)",
           },
         })}
         style={{}}
@@ -83,15 +83,22 @@ export default function Index() {
       </Center>
       <footer
         style={{
-          height: "2em",
           display: "flex",
           justifyContent: "center",
-          flexWrap: "nowrap",
-          flexDirection: "column",
         }}
       >
-        <TrelloLink />
-        <Copyright />
+        <div
+          style={{
+            maxWidth: "85vw",
+            display: "flex",
+            justifyContent: "center",
+            flexWrap: "nowrap",
+            flexDirection: "column",
+          }}
+        >
+          <TrelloLink />
+          <Copyright />
+        </div>
       </footer>
     </>
   );

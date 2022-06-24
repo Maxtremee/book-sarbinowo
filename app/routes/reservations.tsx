@@ -1,3 +1,9 @@
+import { Form, Link, Outlet } from "@remix-run/react";
+import type { LoaderFunction, MetaFunction } from "@remix-run/server-runtime";
+import { json } from "@remix-run/server-runtime";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import i18next from "~/i18next.server";
 import {
   AppShell,
   Box,
@@ -11,16 +17,10 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { Form, Link, Outlet } from "@remix-run/react";
-import type { LoaderFunction, MetaFunction } from "@remix-run/server-runtime";
-import { json } from "@remix-run/server-runtime";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { History, Home, Old, Plus, Settings } from "tabler-icons-react";
 import Copyright from "~/components/Copyright";
 import NavbarLink from "~/components/NavbarLink";
 import TrelloLink from "~/components/TrelloLink";
-import i18next from "~/i18next.server";
 
 import { useUser } from "~/utils";
 
@@ -47,11 +47,10 @@ export default function ReservationsPage() {
       footer={
         <Footer
           height={40}
-          p="md"
           style={{
             display: "flex",
             justifyContent: "center",
-            flexDirection: "column"
+            flexDirection: "column",
           }}
         >
           <TrelloLink />
@@ -64,6 +63,11 @@ export default function ReservationsPage() {
           hiddenBreakpoint="sm"
           hidden={!opened}
           width={{ sm: 220, lg: 300 }}
+          style={{
+            height: "auto",
+            minHeight:
+              "calc(100vh - var(--mantine-header-height, 0px) - var(--mantine-footer-height, 0px));",
+          }}
         >
           <Stack
             align="flex-start"
@@ -71,13 +75,25 @@ export default function ReservationsPage() {
               gap: "0",
             })}
           >
-            <NavbarLink leftIcon={<Home />} to="." onClick={() => setOpened(false)}>
+            <NavbarLink
+              leftIcon={<Home />}
+              to="."
+              onClick={() => setOpened(false)}
+            >
               Menu
             </NavbarLink>
-            <NavbarLink leftIcon={<Plus />} to="new" onClick={() => setOpened(false)}>
+            <NavbarLink
+              leftIcon={<Plus />}
+              to="new"
+              onClick={() => setOpened(false)}
+            >
               {t("newReservation")}
             </NavbarLink>
-            <NavbarLink leftIcon={<History />} to="history" onClick={() => setOpened(false)}>
+            <NavbarLink
+              leftIcon={<History />}
+              to="history"
+              onClick={() => setOpened(false)}
+            >
               {t("history")}
             </NavbarLink>
             {/* <NavbarLink leftIcon={<Settings />} to="account" onClick={() => setOpened(false)}>

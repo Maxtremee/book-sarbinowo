@@ -36,7 +36,7 @@ const ReservationsCalendar: FunctionComponent<RangeCalendarProps> = (props) => {
       <LoadingOverlay visible={fetcher.state !== "idle"} />
       <RangeCalendar
         {...props}
-        excludeDate={(date) => dayjs().isAfter(date) || !!getReservationWithDate(date)}
+        excludeDate={(date) => dayjs().subtract(1, 'day').isAfter(date) || !!getReservationWithDate(date)}
         amountOfMonths={amountOfMonths}
         month={month}
         onMonthChange={(month) => setMonth(month)}

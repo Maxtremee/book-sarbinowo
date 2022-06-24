@@ -3,6 +3,7 @@ import { ReservationState } from "@prisma/client";
 import dayjs from "dayjs";
 
 import { prisma } from "~/db.server";
+import sendConfirmation from "~/email/sendConfirmation";
 
 export type { Reservation, ReservationState } from "@prisma/client";
 
@@ -14,6 +15,9 @@ export function getReservation({
 }) {
   return prisma.reservation.findFirst({
     where: { id, userId },
+    include: {
+      user: true
+    }
   });
 }
 
@@ -24,7 +28,7 @@ export function getUserReservations({ userId }: { userId: User["id"] }) {
   });
 }
 
-export function createReservation({
+export async function createReservation({
   since,
   until,
   guests,
@@ -32,7 +36,7 @@ export function createReservation({
 }: Pick<Reservation, "since" | "until" | "guests"> & {
   userId: User["id"];
 }) {
-  return prisma.reservation.create({
+  const newReservation = await prisma.reservation.create({
     data: {
       since,
       until,
@@ -43,7 +47,12 @@ export function createReservation({
         },
       },
     },
+    include: {
+      user: true
+    }
   });
+  sendConfirmation(newReservation, newReservation.user)
+  return newReservation
 }
 
 export function updateReservation({

@@ -173,6 +173,9 @@ export async function getReservationsInXDays(days: number) {
         gte: inDays,
         lte: inDaysPlusOne,
       },
+      state: {
+        equals: ReservationState.ACTIVE,
+      },
     },
     include: {
       user: true,

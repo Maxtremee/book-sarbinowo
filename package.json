@@ -54,7 +54,8 @@
     "remix": "^1.4.3",
     "remix-i18next": "^4.1.1",
     "tabler-icons-react": "^1.48.1",
-    "tiny-invariant": "^1.2.0"
+    "tiny-invariant": "^1.2.0",
+    "winston": "^3.8.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^6.1.1",

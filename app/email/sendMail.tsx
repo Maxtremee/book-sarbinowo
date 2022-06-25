@@ -1,4 +1,5 @@
 import sgMail, { MailDataRequired } from "@sendgrid/mail";
+import logger from "~/logger";
 
 const key = process.env.SENDGRID_API_KEY || "";
 const sender = process.env.SENDER || "";
@@ -27,6 +28,6 @@ export default async function sendMail(mail: MailContent[]) {
   try {
     await sgMail.send(adjustedMail);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
   }
 }

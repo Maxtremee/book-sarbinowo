@@ -24,6 +24,7 @@ import { requireUserId } from "~/session.server";
 import GoBackButton from "~/components/GoBackButton";
 import { useTranslation } from "react-i18next";
 import { Settings, X } from "tabler-icons-react";
+import logger from "~/logger";
 
 type LoaderData = {
   reservation: Reservation;
@@ -152,7 +153,7 @@ export default function ReservationDetailsPage() {
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error);
+  logger.error(error);
 
   return <div>An unexpected error occurred: {error.message}</div>;
 }

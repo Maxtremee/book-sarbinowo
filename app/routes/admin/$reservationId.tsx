@@ -5,12 +5,12 @@ import { json, redirect } from "@remix-run/node";
 import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import invariant from "tiny-invariant";
+import logger from "~/logger";
 
-import type {
-  Reservation} from "~/models/reservation.server";
+import type { Reservation } from "~/models/reservation.server";
 import {
   adminCancelReservation,
-  getAdminReservation
+  getAdminReservation,
 } from "~/models/reservation.server";
 import type { User } from "~/models/user.server";
 import { getUserById } from "~/models/user.server";
@@ -47,11 +47,9 @@ export const action: ActionFunction = async ({ request, params }) => {
 export default function ReservationDetailsPage() {
   const { reservation, user } = useLoaderData() as LoaderData;
 
-  const { id, guests } = reservation
+  const { id, guests } = reservation;
   const since = dayjs(reservation.since);
   const until = dayjs(reservation.until);
-  const arrival = reservation?.arrival ? dayjs(reservation.arrival) : null;
-  const leave = reservation?.leave ? dayjs(reservation.leave) : null;
   const created = dayjs(reservation.createdAt);
   const updated = dayjs(reservation.updatedAt);
 
@@ -69,10 +67,10 @@ export default function ReservationDetailsPage() {
         />
         <div>
           <h3 className="text-2xl font-bold">
-            Since: {since.format("DD/MM/YYYY")} {arrival?.format("hh:mm")}
+            Since: {since.format("DD/MM/YYYY")}
           </h3>
           <h3 className="text-2xl font-bold">
-            Until: {until.format("DD/MM/YYYY")} {leave?.format("hh:mm")}
+            Until: {until.format("DD/MM/YYYY")}
           </h3>
           <div className="py-6">
             Guests:{" "}
@@ -116,7 +114,7 @@ export default function ReservationDetailsPage() {
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error);
+  logger.error(error);
 
   return <div>An unexpected error occurred: {error.message}</div>;
 }

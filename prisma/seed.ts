@@ -1,5 +1,6 @@
 import { PrismaClient, Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import logger from "~/logger";
 
 const prisma = new PrismaClient();
 
@@ -36,12 +37,12 @@ async function seed() {
     },
   });
 
-  console.log(`Database has been seeded. 🌱`);
+  logger.info(`Database has been seeded. 🌱`);
 }
 
 seed()
   .catch((e) => {
-    console.error(e);
+    logger.error(e);
     process.exit(1);
   })
   .finally(async () => {

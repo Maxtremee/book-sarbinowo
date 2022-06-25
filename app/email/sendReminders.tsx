@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import sendMail from "./sendMail";
 import { getReservationsInXDays } from "~/models/reservation.server";
+import logger from "~/logger";
 
 export default function sendReminders(
   reservations: Awaited<ReturnType<typeof getReservationsInXDays>>, inDays = 1
@@ -26,6 +27,6 @@ export default function sendReminders(
     );
     return { to, subject, html: renderToStaticMarkup(content) };
   });
-
+  logger.info(`Sending ${emailsToSend.length} emails about reservations in ${inDays} days`)
   sendMail(emailsToSend);
 }

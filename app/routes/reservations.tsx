@@ -66,7 +66,7 @@ export default function ReservationsPage() {
           style={{
             height: "auto",
             minHeight:
-              "calc(100vh - var(--mantine-header-height, 0px) - var(--mantine-footer-height, 0px));",
+              "calc(100vh - var(--mantine-header-height, 0px) - var(--mantine-footer-height, 0px))",
           }}
         >
           <Stack

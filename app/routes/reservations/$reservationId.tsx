@@ -153,7 +153,7 @@ export default function ReservationDetailsPage() {
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
-  logger.error(error);
+  console.error(error);
 
   return <div>An unexpected error occurred: {error.message}</div>;
 }

@@ -4,7 +4,7 @@ import { getReservationsInXDays } from "~/models/reservation.server";
 
 export default function jobs() {
   console.log("Initiating schedules");
-  scheduleJob({ hour: 2 }, async () => {
+  scheduleJob({ hour: 6, minute: 0 }, async () => {
     const in1Day = await getReservationsInXDays(1);
     sendReminders(in1Day);
     const in3Days = await getReservationsInXDays(3);

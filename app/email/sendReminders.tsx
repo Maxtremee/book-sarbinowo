@@ -4,11 +4,14 @@ import { getReservationsInXDays } from "~/models/reservation.server";
 import logger from "~/logger";
 
 export default function sendReminders(
-  reservations: Awaited<ReturnType<typeof getReservationsInXDays>>, inDays = 1
+  reservations: Awaited<ReturnType<typeof getReservationsInXDays>>,
+  inDays = 1
 ) {
   const emailsToSend = reservations.map((reservation) => {
     const to = reservation.user.email;
-    const subject = `Sarbinowo: Twoja rezerwacja zaczyna się za ${inDays} ${inDays > 1 ? "dni" : "dzień"}! 🎉`;
+    const subject = `Sarbinowo: Twoja rezerwacja zaczyna się za ${inDays} ${
+      inDays > 1 ? "dni" : "dzień"
+    }! 🎉`;
     const content = (
       <>
         <h3>Przypominamy o nadchodzącej rezerwacji</h3>
@@ -23,10 +26,20 @@ export default function sendReminders(
             <li key={guest}>{guest}</li>
           ))}
         </ul>
+        <a
+          href={`http${process.env.NODE_ENV === "production" && "s"}://${
+            process.env.BASE_URL
+          }/reservations/${reservation.id}`}
+          target="_blank"
+        >
+          Kliknij tutaj aby zobaczyć rezerwację w aplikacji
+        </a>
       </>
     );
     return { to, subject, html: renderToStaticMarkup(content) };
   });
-  logger.info(`Sending ${emailsToSend.length} emails about reservations in ${inDays} days`)
+  logger.info(
+    `Sending ${emailsToSend.length} emails about reservations starting in ${inDays} days`
+  );
   sendMail(emailsToSend);
 }

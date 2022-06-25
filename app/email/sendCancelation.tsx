@@ -22,7 +22,15 @@ export default async function sendCancelation(
           <li key={guest}>{guest}</li>
         ))}
       </ul>
+      <a
+        href={`http${process.env.NODE_ENV === "production" && "s"}://${
+          process.env.BASE_URL
+        }/reservations/${reservation.id}`}
+        target="_blank"
+      >
+        Kliknij tutaj aby zobaczyć rezerwację w aplikacji
+      </a>
     </>
   );
-  sendMail([{to, subject, html: renderToStaticMarkup(content)}]);
+  sendMail([{ to, subject, html: renderToStaticMarkup(content) }]);
 }

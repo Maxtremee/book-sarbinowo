@@ -14,7 +14,7 @@
   "invalidEmail": "Email is invalid",
   "passwordRequired": "Password is required",
   "passwordTooShort": "Password is too short",
-  "firstNameRequired": "First name is required",
+  "nameRequired": "At least first name is required",
   "alreadyExists": "A user already exists with this email",
   "invalidCredentials": "Invalid email or password",
   "reservations": "Reservations",

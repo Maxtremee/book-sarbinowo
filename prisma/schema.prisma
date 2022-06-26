@@ -18,11 +18,10 @@ enum ReservationState {
 }
 
 model User {
-  id        String  @id @default(cuid())
-  email     String  @unique
-  role      Role    @default(USER)
-  firstName String  @default("User")
-  lastName  String?
+  id    String @id @default(cuid())
+  email String @unique
+  role  Role   @default(USER)
+  name  String @default("User")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -45,11 +44,10 @@ model Reservation {
   updatedAt DateTime         @updatedAt
   state     ReservationState @default(ACTIVE)
 
-  since   DateTime
-  until   DateTime
+  since  DateTime
+  until  DateTime
   guests String[]
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
 }
-

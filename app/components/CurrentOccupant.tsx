@@ -23,9 +23,7 @@ export default function CurrentOccupant({
       <Alert
         color="yellow"
         icon={<InfoCircle />}
-        title={`${t("currentlyInApartment")}: ${reservation.user.firstName} ${
-          reservation.user?.lastName || ""
-        }`}
+        title={`${t("currentlyInApartment")}: ${reservation.user.name}`}
       >
         {t("since")} {new Date(reservation.since).toLocaleString()}{" "}
         {t("until").toLowerCase()}{" "}

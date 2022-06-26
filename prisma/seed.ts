@@ -6,8 +6,7 @@ const prisma = new PrismaClient();
 
 async function seed() {
   const email = "test@test.com";
-  const firstName = "Test";
-  const lastName = "User";
+  const name = "Test";
   let user = await prisma.user.findFirst({ where: { email } });
 
   if (!user) {
@@ -22,8 +21,7 @@ async function seed() {
           },
         },
         role: Role.ADMIN,
-        firstName,
-        lastName,
+        name
       },
     });
   }

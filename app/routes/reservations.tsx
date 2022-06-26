@@ -137,7 +137,7 @@ export default function ReservationsPage() {
               </Text>
               <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
                 <Text align="center" color="white">
-                  {t("welcome")}, {user.firstName} {user?.lastName}
+                  {t("welcome")}, {user.name}
                 </Text>
               </MediaQuery>
               <Form action="/logout" method="post">

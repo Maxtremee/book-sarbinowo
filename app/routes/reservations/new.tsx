@@ -118,7 +118,7 @@ export default function NewNotePage() {
       leave: dayjs().hour(16).minute(0).toDate(),
       guests: formList([
         {
-          name: `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`,
+          name: user.name,
           key: randomId(),
         },
       ]),

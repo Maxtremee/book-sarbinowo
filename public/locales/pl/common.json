@@ -14,7 +14,7 @@
   "invalidEmail": "Adres email jest niepoprawny",
   "passwordRequired": "Hasło jest wymagane",
   "passwordTooShort": "Hasło jest zbyt krótkie",
-  "firstNameRequired": "Imię jest wymagane",
+  "nameRequired": "Przynajmniej imię jest wymagane",
   "alreadyExists": "Użytkownik z tym adresem email już istnieje",
   "invalidCredentials": "Niepoprawny email lub hasło",
   "welcome": "Witaj",

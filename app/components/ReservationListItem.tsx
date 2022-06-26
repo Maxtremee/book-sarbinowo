@@ -23,7 +23,7 @@ export default function ReservationListItem({
           backgroundColor: theme.colors.gray[0],
         },
       })}
-      shadow="lg"
+      shadow="md"
       component={Link}
       to={`/reservations/${id}`}
     >

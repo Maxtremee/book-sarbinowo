@@ -70,5 +70,7 @@
   "closestReservation": "Your next reservation",
   "calendar": "Calendar",
   "haveANiceStay": "Have a nice holiday!",
-  "showCanceled": "Show canceled"
+  "showCanceled": "Show canceled",
+  "reservationNotFound": "Reservation not found",
+  "resultsAmount": "Results amount on page"
 }

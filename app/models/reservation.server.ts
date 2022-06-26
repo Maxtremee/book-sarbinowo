@@ -29,6 +29,47 @@ export function getUserReservations({ userId }: { userId: User["id"] }) {
   });
 }
 
+export function getUserTotalReservations({
+  userId,
+  canceled = false,
+}: {
+  userId: User["id"];
+  canceled?: boolean;
+}) {
+  return prisma.reservation.count({
+    where: {
+      userId,
+      state: {
+        equals: canceled ? undefined : ReservationState.ACTIVE,
+      },
+    },
+  });
+}
+
+export function getUserReservationsOffset({
+  userId,
+  amount = 10,
+  offset = 0,
+  canceled = false,
+}: {
+  userId: User["id"];
+  amount?: number;
+  offset?: number;
+  canceled?: boolean;
+}) {
+  return prisma.reservation.findMany({
+    skip: offset,
+    take: amount,
+    where: {
+      userId,
+      state: {
+        equals: canceled ? undefined : ReservationState.ACTIVE,
+      },
+    },
+    orderBy: { since: "desc" },
+  });
+}
+
 export async function createReservation({
   since,
   until,

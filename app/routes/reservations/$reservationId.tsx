@@ -14,7 +14,7 @@ import {
 import { Calendar } from "@mantine/dates";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, useCatch, useLoaderData } from "@remix-run/react";
+import { Form, useCatch, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import invariant from "tiny-invariant";
 
@@ -24,7 +24,6 @@ import { requireUserId } from "~/session.server";
 import GoBackButton from "~/components/GoBackButton";
 import { useTranslation } from "react-i18next";
 import { Settings, X } from "tabler-icons-react";
-import logger from "~/logger";
 
 type LoaderData = {
   reservation: Reservation;
@@ -160,9 +159,10 @@ export function ErrorBoundary({ error }: { error: Error }) {
 
 export function CatchBoundary() {
   const caught = useCatch();
+  const { t } = useTranslation();
 
   if (caught.status === 404) {
-    return <div>Reservation not found</div>;
+    return <div>{t("reservationNotFound")}</div>;
   }
 
   throw new Error(`Unexpected caught response with status: ${caught.status}`);

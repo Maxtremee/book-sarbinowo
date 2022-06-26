@@ -68,5 +68,7 @@
   "closestReservation": "Twoja następna rezerwacja",
   "calendar": "Kalendarz",
   "haveANiceStay": "Miłego wypoczynku!",
-  "showCanceled": "Pokaż anulowane"
+  "showCanceled": "Pokaż anulowane",
+  "reservationNotFound": "Nie znaleziono takiej rezerwacji",
+  "resultsAmount": "Wybierz ilość wyników na stronie"
 }

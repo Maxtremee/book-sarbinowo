@@ -43,6 +43,7 @@ export default function ReservationsPage() {
 
   return (
     <AppShell
+      fixed
       padding="md"
       footer={
         <Footer
@@ -64,9 +65,7 @@ export default function ReservationsPage() {
           hidden={!opened}
           width={{ sm: 220, lg: 300 }}
           style={{
-            height: "auto",
-            minHeight:
-              "calc(100vh - var(--mantine-header-height, 0px) - var(--mantine-footer-height, 0px))",
+            height: "100%",
           }}
         >
           <Stack
@@ -152,7 +151,6 @@ export default function ReservationsPage() {
       }
       styles={(theme) => ({
         main: {
-          overflow: "auto",
           [`@media (min-width: ${theme.breakpoints.xl}px)`]: {
             display: "flex",
             justifyContent: "center",

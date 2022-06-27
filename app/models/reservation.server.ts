@@ -172,14 +172,15 @@ export async function getReservationsSinceThroughXMonths(
   since: Date,
   months = 3
 ) {
-  const until = dayjs(since).add(months, "months").toDate();
+  const sinceAdjusted = dayjs(since).subtract(7, "days").toDate();
+  const until = dayjs(since).add(months, "months").add(7, "days").toDate();
   return prisma.reservation.findMany({
     where: {
       since: {
         lte: until,
       },
       until: {
-        gte: since,
+        gte: sinceAdjusted,
       },
       state: {
         equals: ReservationState.ACTIVE,

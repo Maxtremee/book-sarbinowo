@@ -1,6 +1,6 @@
 import { Button, ButtonProps } from "@mantine/core";
 import { FunctionComponent } from "react";
-import { Link } from "remix";
+import { Link } from "@remix-run/react";
 
 const NavbarLink: FunctionComponent<ButtonProps<typeof Link>> = (props) => {
   return (

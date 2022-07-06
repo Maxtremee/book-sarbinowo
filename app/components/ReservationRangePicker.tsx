@@ -1,5 +1,5 @@
 import { FunctionComponent, useCallback, useEffect, useState } from "react";
-import { useFetcher } from "remix";
+import { useFetcher } from "@remix-run/react";
 import { LoadingOverlay } from "@mantine/core";
 import { RangeCalendar, RangeCalendarProps } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";

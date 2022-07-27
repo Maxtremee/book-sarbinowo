@@ -5,7 +5,7 @@ import type {
   LoaderFunction,
 } from "@remix-run/node";
 import { Button, Group, Stack, Text, TextInput, Title } from "@mantine/core";
-import { DateRangePicker, TimeInput } from "@mantine/dates";
+import { TimeInput } from "@mantine/dates";
 import { formList, useForm } from "@mantine/form";
 import { randomId } from "@mantine/hooks";
 import { json, redirect } from "@remix-run/node";
@@ -25,6 +25,7 @@ import { DeviceFloppy, Plus, X } from "tabler-icons-react";
 import getSinceUntil from "~/utils/getSinceUntil";
 import showAvailability from "~/utils/showAvailability";
 import ReservationRangePicker from "~/components/ReservationRangePicker";
+import UserAutocomplete from "~/components/UserAutocomplete";
 
 type MakeReservationErrorData = {
   errors?: {
@@ -106,8 +107,8 @@ export const meta: MetaFunction = ({ data }) => {
 };
 
 export default function NewNotePage() {
-  const { t } = useTranslation();
   const actionData = useActionData() as MakeReservationErrorData;
+  const { t } = useTranslation();
   const fetcher = useFetcher();
   const submit = useSubmit();
   const user = useUser();
@@ -216,15 +217,16 @@ export default function NewNotePage() {
         <Title order={5}>{t("guests")}</Title>
         <Stack spacing="xs" align="stretch">
           {form.values.guests.map((item, index) => (
-            <Group key={item.key}>
-              <TextInput
-                style={{ flexGrow: 1 }}
+            <Group key={item.key} grow>
+              <UserAutocomplete
+                label="Imię"
                 required
                 placeholder={t("guestNamePlaceholder")}
                 error={actionData?.errors?.guests}
                 {...form.getListInputProps("guests", index, "name")}
               />
               <Button
+                style={{ alignSelf: "flex-end" }}
                 leftIcon={<X />}
                 color="red"
                 onClick={(event: any) => handleRemoveGuest(event, index)}

@@ -1,5 +1,5 @@
 import { Stack } from "@mantine/core";
-import { getUserReservationsOffset } from "~/models/reservation.server";
+import type { getUserReservationsOffset } from "~/models/reservation.server";
 import ReservationListItem from "./ReservationListItem";
 
 export default function ReservationList({

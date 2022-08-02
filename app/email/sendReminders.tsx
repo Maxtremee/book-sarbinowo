@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import sendMail from "./sendMail";
-import { getReservationsInXDays } from "~/models/reservation.server";
+import type { getReservationsInXDays } from "~/models/reservation.server";
 import logger from "~/logger";
 
 export default function sendReminders(
@@ -33,7 +33,7 @@ export default function sendReminders(
               href={`http${process.env.NODE_ENV === "production" && "s"}://${
                 process.env.BASE_URL
               }/reservations/${reservation.id}`}
-              target="_blank"
+              target="_blank" rel="noreferrer"
             >
               Kliknij tutaj aby zobaczyć rezerwację w aplikacji
             </a>

@@ -1,4 +1,5 @@
-import sgMail, { MailDataRequired } from "@sendgrid/mail";
+import type { MailDataRequired } from "@sendgrid/mail";
+import sgMail from "@sendgrid/mail";
 import logger from "~/logger";
 
 const key = process.env.SENDGRID_API_KEY || "";

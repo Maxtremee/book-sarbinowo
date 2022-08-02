@@ -15,7 +15,8 @@ import {
   Title,
 } from "@mantine/core";
 import { TimeInput } from "@mantine/dates";
-import { FormList, formList, useForm } from "@mantine/form";
+import type { FormList} from "@mantine/form";
+import { formList, useForm } from "@mantine/form";
 import { randomId } from "@mantine/hooks";
 import { json, redirect } from "@remix-run/node";
 import { Form, useActionData, useFetcher, useSubmit } from "@remix-run/react";

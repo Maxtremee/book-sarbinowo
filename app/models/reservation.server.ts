@@ -105,7 +105,7 @@ export async function createReservation({
       guests: true,
     },
   });
-  sendConfirmation(newReservation, newReservation.user);
+  sendConfirmation(newReservation);
   return newReservation;
 }
 
@@ -153,7 +153,7 @@ export async function cancelReservation({
 }: Pick<Reservation, "id"> & { userId: User["id"] }) {
   const oldReservation = await getReservation({ id, userId });
   if (oldReservation && oldReservation.state !== "CANCELED") {
-    sendCancelation(oldReservation, oldReservation.user);
+    sendCancelation(oldReservation);
   }
   return prisma.reservation.updateMany({
     where: { id, userId },

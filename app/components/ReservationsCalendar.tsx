@@ -3,7 +3,7 @@ import { useFetcher } from "@remix-run/react";
 import { List, LoadingOverlay, Popover, useMantineTheme } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
-import { Guest } from "@prisma/client";
+import type { Guest } from "@prisma/client";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 import type { LoaderData as GetReservationsType } from "../routes/api/reservations/get";

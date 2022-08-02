@@ -1,12 +1,14 @@
-import { FunctionComponent, SetStateAction, useEffect, useState } from "react";
+import type { FunctionComponent, SetStateAction} from "react";
+import { useEffect, useState } from "react";
 import { useFetcher } from "@remix-run/react";
-import { Autocomplete, AutocompleteItem, TextInput } from "@mantine/core";
+import type { AutocompleteItem} from "@mantine/core";
+import { Autocomplete, TextInput } from "@mantine/core";
 import { randomId, useDebouncedValue } from "@mantine/hooks";
 import type { LoaderData as GetUsersLoaderData } from "~/routes/api/previousGuests";
 import { LoaderQuarter } from "tabler-icons-react";
 import { useTranslation } from "react-i18next";
-import { UseFormReturnType } from "@mantine/form/lib/use-form";
-import { NewReservationFormValues } from "~/routes/reservations/new";
+import type { UseFormReturnType } from "@mantine/form/lib/use-form";
+import type { NewReservationFormValues } from "~/routes/reservations/new";
 
 type UserAutocompleteProps = {
   form: UseFormReturnType<NewReservationFormValues>;

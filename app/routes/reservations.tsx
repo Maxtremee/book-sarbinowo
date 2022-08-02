@@ -17,7 +17,7 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { History, Home, Old, Plus, Settings } from "tabler-icons-react";
+import { History, Home, Plus } from "tabler-icons-react";
 import Copyright from "~/components/Copyright";
 import NavbarLink from "~/components/NavbarLink";
 import TrelloLink from "~/components/TrelloLink";

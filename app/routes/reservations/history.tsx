@@ -24,7 +24,7 @@ import {
   Switch,
   Text,
 } from "@mantine/core";
-import { ChangeEvent } from "react";
+import type { ChangeEvent } from "react";
 
 type LoaderData = {
   reservations: Awaited<ReturnType<typeof getUserReservationsOffset>>;

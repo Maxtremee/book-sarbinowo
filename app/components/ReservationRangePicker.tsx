@@ -1,8 +1,10 @@
 import type { LoaderData as GetReservationsType } from "../routes/api/reservations/get";
-import { FunctionComponent, useCallback, useEffect, useState } from "react";
+import type { FunctionComponent} from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useFetcher } from "@remix-run/react";
 import { LoadingOverlay } from "@mantine/core";
-import { RangeCalendar, RangeCalendarProps } from "@mantine/dates";
+import type { RangeCalendarProps } from "@mantine/dates";
+import { RangeCalendar } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";

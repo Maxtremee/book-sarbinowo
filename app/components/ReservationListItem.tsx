@@ -1,5 +1,5 @@
 import { Badge, Group, Paper, Text } from "@mantine/core";
-import type { Reservation } from "@prisma/client";
+import type { Guest, Reservation } from "@prisma/client";
 import { ReservationState } from "@prisma/client";
 import { Link } from "@remix-run/react";
 import dayjs from "dayjs";
@@ -12,7 +12,7 @@ export default function ReservationListItem({
   state,
   guests,
   showState = false,
-}: Reservation & { showState?: boolean }) {
+}: Reservation & {guests: Guest[]} & { showState?: boolean }) {
   const { t } = useTranslation();
 
   return (

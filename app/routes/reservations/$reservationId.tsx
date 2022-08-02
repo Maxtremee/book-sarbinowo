@@ -18,7 +18,6 @@ import { Form, useCatch, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import invariant from "tiny-invariant";
 
-import type { Reservation } from "~/models/reservation.server";
 import { getReservation, cancelReservation } from "~/models/reservation.server";
 import { requireUserId } from "~/session.server";
 import GoBackButton from "~/components/GoBackButton";
@@ -26,7 +25,7 @@ import { useTranslation } from "react-i18next";
 import { Settings, X } from "tabler-icons-react";
 
 type LoaderData = {
-  reservation: Reservation;
+  reservation: Awaited<ReturnType<typeof getReservation>>;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -57,11 +56,10 @@ export default function ReservationDetailsPage() {
   const [cancelOpen, setCancelOpen] = useState(false);
 
   const { reservation } = useLoaderData() as LoaderData;
-  const since = dayjs(reservation.since);
-  const until = dayjs(reservation.until);
-  const created = dayjs(reservation.createdAt);
-  const updated = dayjs(reservation.updatedAt);
-  const { guests } = reservation;
+  const since = dayjs(reservation?.since);
+  const until = dayjs(reservation?.until);
+  const created = dayjs(reservation?.createdAt);
+  const updated = dayjs(reservation?.updatedAt);
 
   return (
     <>
@@ -86,8 +84,8 @@ export default function ReservationDetailsPage() {
           </div>
           <Text>{t("guests")}:</Text>
           <List withPadding>
-            {guests?.map((guest) => (
-              <ListItem key={guest}>{guest}</ListItem>
+            {reservation?.guests?.map(({ name }) => (
+              <ListItem key={name}>{name}</ListItem>
             ))}
           </List>
         </Stack>
@@ -122,7 +120,7 @@ export default function ReservationDetailsPage() {
             </Button>
           </Tooltip>
         )}
-        {reservation.state === "ACTIVE" && (
+        {reservation?.state === "ACTIVE" && (
           <Button
             leftIcon={<X />}
             color="red"

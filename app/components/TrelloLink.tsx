@@ -7,7 +7,7 @@ export default function TrelloLink() {
     <Anchor
       size="xs"
       align="center"
-      style={{display: "block"}}
+      style={{ display: "block" }}
       href="https://trello.com/b/WpaVJm9G/book-sarbinowo"
       target="_blank"
     >

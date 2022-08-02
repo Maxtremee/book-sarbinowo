@@ -1,12 +1,12 @@
 import { Stack } from "@mantine/core";
-import type { Reservation } from "@prisma/client";
+import { getUserReservationsOffset } from "~/models/reservation.server";
 import ReservationListItem from "./ReservationListItem";
 
 export default function ReservationList({
   reservations,
   showCanceled,
 }: {
-  reservations: Reservation[];
+  reservations: Awaited<ReturnType<typeof getUserReservationsOffset>>;
   showCanceled: boolean;
 }) {
   return (

@@ -1,9 +1,7 @@
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { json } from "@remix-run/server-runtime";
 import invariant from "tiny-invariant";
-import {
-  getReservationsSinceThroughXMonths,
-} from "~/models/reservation.server";
+import { getReservationsSinceThroughXMonths } from "~/models/reservation.server";
 
 export type LoaderData = {
   reservations: Awaited<ReturnType<typeof getReservationsSinceThroughXMonths>>;

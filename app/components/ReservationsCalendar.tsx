@@ -1,20 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
-import { useFetcher } from "remix";
+import { useFetcher } from "@remix-run/react";
 import { List, LoadingOverlay, Popover, useMantineTheme } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
-import { Reservation } from "@prisma/client";
+import { Guest } from "@prisma/client";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
+import type { LoaderData as GetReservationsType } from "../routes/api/reservations/get";
 dayjs.extend(isBetween);
-import type { LoaderData as GetReservationsType } from "../routes/reservations/getReservations";
 
 const DateWithPopover = ({
   day,
-  reservation,
+  guests,
 }: {
   day: number;
-  reservation: Reservation;
+  guests: Guest[];
 }) => {
   const [isPopoverOpened, setPopoverOpened] = useState(false);
   return (
@@ -30,8 +30,8 @@ const DateWithPopover = ({
       }
     >
       <List>
-        {reservation.guests.map((guest) => (
-          <List.Item key={guest}>{guest}</List.Item>
+        {guests.map(({name}) => (
+          <List.Item key={name}>{name}</List.Item>
         ))}
       </List>
     </Popover>
@@ -78,7 +78,7 @@ export default function ReservationsCalendar() {
     params.set("since", month.toISOString());
     params.set("months", amountOfMonths.toString());
 
-    fetcher.submit(params, { action: "/reservations/getReservations" });
+    fetcher.submit(params, { action: "/api/reservations/get" });
   }, [month]);
 
   useEffect(() => {
@@ -99,7 +99,7 @@ export default function ReservationsCalendar() {
           const day = date.getDate();
           const reservation = getReservationWithDate(date);
           if (reservation) {
-            return <DateWithPopover day={day} reservation={reservation} />;
+            return <DateWithPopover day={day} guests={reservation.guests} />;
           }
           return <div>{day}</div>;
         }}

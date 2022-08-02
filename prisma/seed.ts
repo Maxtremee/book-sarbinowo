@@ -21,7 +21,7 @@ async function seed() {
           },
         },
         role: Role.ADMIN,
-        name
+        name,
       },
     });
   }
@@ -31,7 +31,14 @@ async function seed() {
       userId: user.id,
       since: new Date("2022-07-01 10:00:00").toISOString(),
       until: new Date("2022-07-08 16:00:00").toISOString(),
-      guests: ["Test", "Test2"],
+      guests: {
+        createMany: {
+          data: [
+            { name: "Test 1", email: "test@test.com" },
+            { name: "Test 2" },
+          ],
+        },
+      },
     },
   });
 

@@ -1,7 +1,4 @@
-import type {
-  LoaderFunction,
-  MetaFunction,
-} from "@remix-run/node";
+import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
   Links,
@@ -12,12 +9,8 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
-import type {
-  ColorScheme} from "@mantine/core";
-import {
-  ColorSchemeProvider,
-  MantineProvider,
-} from "@mantine/core";
+import type { ColorScheme } from "@mantine/core";
+import { ColorSchemeProvider, MantineProvider } from "@mantine/core";
 import { useState } from "react";
 import { useChangeLanguage } from "remix-i18next";
 import { useTranslation } from "react-i18next";
@@ -53,7 +46,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body style={{margin: 0, padding: 0}}>
+      <body style={{ margin: 0, padding: 0 }}>
         <MantineTheme>
           <Outlet />
           <ScrollRestoration />

@@ -1,8 +1,5 @@
-import type {
-  LoaderFunction} from "@remix-run/server-runtime";
-import {
-  json
-} from "@remix-run/server-runtime";
+import type { LoaderFunction } from "@remix-run/server-runtime";
+import { json } from "@remix-run/server-runtime";
 import invariant from "tiny-invariant";
 import { checkAvailability } from "~/models/reservation.server";
 
@@ -11,9 +8,9 @@ export type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const params = new URL(request.url).searchParams
-  const since = params.get('since')
-  const until = params.get('until')
+  const params = new URL(request.url).searchParams;
+  const since = params.get("since");
+  const until = params.get("until");
 
   invariant(since, "since date not found");
   invariant(until, "until date not found");

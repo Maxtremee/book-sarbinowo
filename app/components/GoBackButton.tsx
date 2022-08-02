@@ -17,6 +17,7 @@ export default function GoBackButton({
       leftIcon={<ArrowBack />}
       style={style}
       onClick={() => (goTo ? navigate(goTo) : navigate(-1))}
+      type="button"
     >
       {t("goBack")}
     </Button>

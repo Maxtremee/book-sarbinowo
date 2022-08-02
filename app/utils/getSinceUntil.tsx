@@ -1,6 +1,10 @@
 import dayjs from "dayjs";
 
-export default function getSinceUntil (arrivalHour: Date, leaveHour: Date, stay: Date[]) {
+export default function getSinceUntil(
+  arrivalHour: Date,
+  leaveHour: Date,
+  stay: Date[]
+) {
   const arrival = dayjs(arrivalHour);
   const leave = dayjs(leaveHour);
 
@@ -13,4 +17,4 @@ export default function getSinceUntil (arrivalHour: Date, leaveHour: Date, stay:
     .minute(leave.minute())
     .second(0);
   return { since, until };
-};
+}

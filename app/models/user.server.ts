@@ -65,20 +65,3 @@ export async function verifyLogin(
 
   return userWithoutPassword;
 }
-
-export async function getUsersByName(searchStr: string, limit: number) {
-  return prisma.user.findMany({
-    where: {
-      name: {
-        contains: searchStr,
-        mode: "insensitive"
-      },
-    },
-    take: limit || 3,
-    select: {
-      name: true,
-      id: true,
-      email: true,
-    },
-  });
-}

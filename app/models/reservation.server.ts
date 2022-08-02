@@ -1,4 +1,4 @@
-import type { User, Reservation } from "@prisma/client";
+import type { User, Reservation, Guest } from "@prisma/client";
 import { ReservationState } from "@prisma/client";
 import dayjs from "dayjs";
 
@@ -18,6 +18,7 @@ export function getReservation({
     where: { id, userId },
     include: {
       user: true,
+      guests: true,
     },
   });
 }
@@ -26,6 +27,9 @@ export function getUserReservations({ userId }: { userId: User["id"] }) {
   return prisma.reservation.findMany({
     where: { userId },
     orderBy: { since: "desc" },
+    include: {
+      guests: true,
+    },
   });
 }
 
@@ -67,6 +71,9 @@ export function getUserReservationsOffset({
       },
     },
     orderBy: { since: "desc" },
+    include: {
+      guests: true,
+    },
   });
 }
 
@@ -75,14 +82,18 @@ export async function createReservation({
   until,
   guests,
   userId,
-}: Pick<Reservation, "since" | "until" | "guests"> & {
+}: Pick<Reservation, "since" | "until"> & { guests: Guest[] } & {
   userId: User["id"];
 }) {
   const newReservation = await prisma.reservation.create({
     data: {
       since,
       until,
-      guests,
+      guests: {
+        createMany: {
+          data: guests,
+        },
+      },
       user: {
         connect: {
           id: userId,
@@ -91,32 +102,49 @@ export async function createReservation({
     },
     include: {
       user: true,
+      guests: true,
     },
   });
   sendConfirmation(newReservation, newReservation.user);
   return newReservation;
 }
 
-export function updateReservation({
+export async function updateReservation({
   id,
   since,
   until,
   guests,
   userId,
-}: Pick<Reservation, "id" | "since" | "until" | "guests"> & {
+}: Pick<Reservation, "id" | "since" | "until"> & { guests: Guest[] } & {
   userId: User["id"];
 }) {
-  return prisma.reservation.updateMany({
+  const old = await prisma.reservation.findFirst({
     where: {
       id,
       userId,
     },
-    data: {
-      since,
-      until,
-      guests,
+    include: {
+      guests: true,
     },
   });
+
+  if (old) {
+    return prisma.reservation.update({
+      where: {
+        id,
+      },
+      data: {
+        since,
+        until,
+        guests: {
+          deleteMany: old.guests,
+          createMany: {
+            data: guests,
+          },
+        },
+      },
+    });
+  }
 }
 
 export async function cancelReservation({
@@ -186,6 +214,9 @@ export async function getReservationsSinceThroughXMonths(
         equals: ReservationState.ACTIVE,
       },
     },
+    include: {
+      guests: true,
+    },
   });
 }
 
@@ -202,6 +233,9 @@ export async function getUsersClosestReservation(userId: User["id"]) {
     },
     orderBy: {
       since: "asc",
+    },
+    include: {
+      guests: true,
     },
   });
 }
@@ -220,47 +254,41 @@ export async function getReservationsInXDays(days: number) {
       },
     },
     include: {
-      user: true,
+      guests: true
     },
   });
 }
 
-// Admin methods
-export function getAllReservations() {
-  return prisma.reservation.findMany({
-    orderBy: { since: "desc" },
-  });
-}
-
-export function getAdminReservation({ id }: Pick<Reservation, "id">) {
-  return prisma.reservation.findFirst({
-    where: { id },
-  });
-}
-
-export function adminUpdateReservation({
-  id,
-  since,
-  until,
-  guests,
-}: Pick<Reservation, "id" | "since" | "until" | "guests">) {
-  return prisma.reservation.update({
+export async function getUsersFromPreviousReservations({
+  userId,
+  searchStr,
+  limit,
+}: {
+  userId: User["id"];
+  searchStr: string;
+  limit: number;
+}) {
+  const guests = await prisma.reservation.findMany({
     where: {
-      id,
+      userId,
+      guests: {
+        some: {
+          name: {
+            contains: searchStr,
+            mode: "insensitive",
+          },
+        },
+      },
     },
-    data: {
-      since,
-      until,
-      guests,
+    take: limit || 3,
+    select: {
+      guests: {
+        select: {
+          email: true,
+          name: true,
+        },
+      },
     },
   });
-}
-
-export function adminCancelReservation({ id }: Pick<Reservation, "id">) {
-  return prisma.reservation.updateMany({
-    where: { id },
-    data: {
-      state: ReservationState.CANCELED,
-    },
-  });
+  return guests.flatMap(({ guests }) => guests);
 }

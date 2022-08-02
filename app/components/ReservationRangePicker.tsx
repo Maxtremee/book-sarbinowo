@@ -1,3 +1,4 @@
+import type { LoaderData as GetReservationsType } from "../routes/api/reservations/get";
 import { FunctionComponent, useCallback, useEffect, useState } from "react";
 import { useFetcher } from "@remix-run/react";
 import { LoadingOverlay } from "@mantine/core";
@@ -6,7 +7,6 @@ import { useMediaQuery } from "@mantine/hooks";
 import dayjs from "dayjs";
 import isBetween from "dayjs/plugin/isBetween";
 dayjs.extend(isBetween);
-import type { LoaderData as GetReservationsType } from "../routes/reservations/getReservations";
 
 const ReservationsCalendar: FunctionComponent<RangeCalendarProps> = (props) => {
   const isMobile = useMediaQuery("(max-width: 800px)", false);
@@ -23,12 +23,12 @@ const ReservationsCalendar: FunctionComponent<RangeCalendarProps> = (props) => {
         const between = reservations.filter(({ since, until }) =>
           dayjs(date).hour(12).isBetween(since, until, "day")
         );
-        const endOnDate = reservations.find(
-          ({ until }) => dayjs(until).isSame(date, "day")
+        const endOnDate = reservations.find(({ until }) =>
+          dayjs(until).isSame(date, "day")
         );
         if (endOnDate) {
-          const startOnEndOnDate = reservations.find(
-            ({ since }) => dayjs(since).isSame(endOnDate.until, "day")
+          const startOnEndOnDate = reservations.find(({ since }) =>
+            dayjs(since).isSame(endOnDate.until, "day")
           );
           if (startOnEndOnDate) {
             return true;
@@ -36,7 +36,7 @@ const ReservationsCalendar: FunctionComponent<RangeCalendarProps> = (props) => {
         }
         return !!between.length;
       }
-      return false
+      return false;
     },
     [fetcher?.data]
   );
@@ -46,7 +46,7 @@ const ReservationsCalendar: FunctionComponent<RangeCalendarProps> = (props) => {
     params.set("since", month.toISOString());
     params.set("months", amountOfMonths.toString());
 
-    fetcher.submit(params, { action: "/reservations/getReservations" });
+    fetcher.submit(params, { action: "/api/reservations/get" });
   }, [month]);
 
   useEffect(() => {

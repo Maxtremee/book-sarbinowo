@@ -4,9 +4,18 @@ import type {
   MetaFunction,
   LoaderFunction,
 } from "@remix-run/node";
-import { Button, Group, Stack, Text, TextInput, Title } from "@mantine/core";
+import i18next from "~/i18next.server";
+import { useTranslation } from "react-i18next";
+import { DeviceFloppy, Plus, X } from "tabler-icons-react";
+import {
+  Button,
+  Group,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import { TimeInput } from "@mantine/dates";
-import { formList, useForm } from "@mantine/form";
+import { FormList, formList, useForm } from "@mantine/form";
 import { randomId } from "@mantine/hooks";
 import { json, redirect } from "@remix-run/node";
 import { Form, useActionData, useFetcher, useSubmit } from "@remix-run/react";
@@ -19,13 +28,23 @@ import {
 import { requireUserId } from "~/session.server";
 import { useUser } from "~/utils";
 import GoBackButton from "~/components/GoBackButton";
-import i18next from "~/i18next.server";
-import { useTranslation } from "react-i18next";
-import { DeviceFloppy, Plus, X } from "tabler-icons-react";
 import getSinceUntil from "~/utils/getSinceUntil";
 import showAvailability from "~/utils/showAvailability";
 import ReservationRangePicker from "~/components/ReservationRangePicker";
 import UserAutocomplete from "~/components/UserAutocomplete";
+
+export type NewReservationFormValues = {
+  stay: FormList<Date>;
+  arrival: Date;
+  leave: Date;
+  guests: FormList<{ name: string; email?: string; key: string }>;
+};
+
+const newReservationDefaultValues: Omit<NewReservationFormValues, "guests"> = {
+  stay: formList([new Date(), dayjs().add(1, "day").toDate()]),
+  arrival: dayjs().hour(10).minute(0).toDate(),
+  leave: dayjs().hour(16).minute(0).toDate(),
+};
 
 type MakeReservationErrorData = {
   errors?: {
@@ -106,20 +125,19 @@ export const meta: MetaFunction = ({ data }) => {
   };
 };
 
-export default function NewNotePage() {
+export default function NewReservationPage() {
   const actionData = useActionData() as MakeReservationErrorData;
   const { t } = useTranslation();
   const fetcher = useFetcher();
   const submit = useSubmit();
   const user = useUser();
-  const form = useForm({
+  const form = useForm<NewReservationFormValues>({
     initialValues: {
-      stay: formList([new Date(), dayjs().add(1, "day").toDate()]),
-      arrival: dayjs().hour(10).minute(0).toDate(),
-      leave: dayjs().hour(16).minute(0).toDate(),
+      ...newReservationDefaultValues,
       guests: formList([
         {
           name: user.name,
+          email: user.email,
           key: randomId(),
         },
       ]),
@@ -127,12 +145,12 @@ export default function NewNotePage() {
   });
 
   const handleAddGuest = (event: any) => {
-    event.preventDefault();
-    form.addListItem("guests", { name: "", key: randomId() });
+    // event.preventDefault();
+    form.addListItem("guests", { name: "", email: "", key: randomId() });
   };
 
   const handleRemoveGuest = (event: any, index: number) => {
-    event.preventDefault();
+    // event.preventDefault();
     form.removeListItem("guests", index);
   };
 
@@ -146,7 +164,9 @@ export default function NewNotePage() {
     );
 
     const guests = JSON.stringify(
-      form.values.guests.filter(({ name }) => name).map(({ name }) => name)
+      form.values.guests
+        ?.filter(({ name }) => name)
+        .map(({ name, email }) => ({ name, email }))
     );
 
     const formData = new FormData();
@@ -187,25 +207,25 @@ export default function NewNotePage() {
             <span style={{ color: "red" }}> *</span>
           </Text>
           <ReservationRangePicker
+            {...form.getInputProps("stay")}
             style={{ flexGrow: 1 }}
             fullWidth
-            {...form.getInputProps("stay")}
           />
           {actionData?.errors?.date && (
             <Text color="red">{actionData?.errors?.date}</Text>
           )}
           <Group>
             <TimeInput
+              {...form.getInputProps("arrival")}
               required
               label={t("arrival")}
               clearable
-              {...form.getInputProps("arrival")}
             />
             <TimeInput
+              {...form.getInputProps("leave")}
               required
               label={t("leave")}
               clearable
-              {...form.getInputProps("leave")}
             />
           </Group>
         </Group>
@@ -217,28 +237,22 @@ export default function NewNotePage() {
         <Title order={5}>{t("guests")}</Title>
         <Stack spacing="xs" align="stretch">
           {form.values.guests.map((item, index) => (
-            <Group key={item.key} grow>
-              <UserAutocomplete
-                label="Imię"
-                required
-                placeholder={t("guestNamePlaceholder")}
-                error={actionData?.errors?.guests}
-                {...form.getListInputProps("guests", index, "name")}
-              />
+            <Group key={item.key}>
+              <UserAutocomplete form={form} index={index} />
               <Button
                 style={{ alignSelf: "flex-end" }}
-                leftIcon={<X />}
                 color="red"
                 onClick={(event: any) => handleRemoveGuest(event, index)}
+                type="button"
               >
-                {t("delete")}
+                <X />
               </Button>
             </Group>
           ))}
         </Stack>
 
         <Group position="center">
-          <Button leftIcon={<Plus />} onClick={handleAddGuest}>
+          <Button leftIcon={<Plus />} onClick={handleAddGuest} type="button">
             {t("addGuest")}
           </Button>
         </Group>

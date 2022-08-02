@@ -1,43 +1,70 @@
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, SetStateAction, useEffect, useState } from "react";
 import { useFetcher } from "@remix-run/react";
-import { Autocomplete, AutocompleteProps, TextInput } from "@mantine/core";
-import { useDebouncedValue } from "@mantine/hooks";
-import type { LoaderData as GetUsersLoaderData } from "~/routes/getUsers";
+import { Autocomplete, AutocompleteItem, TextInput } from "@mantine/core";
+import { randomId, useDebouncedValue } from "@mantine/hooks";
+import type { LoaderData as GetUsersLoaderData } from "~/routes/api/previousGuests";
 import { LoaderQuarter } from "tabler-icons-react";
+import { useTranslation } from "react-i18next";
+import { UseFormReturnType } from "@mantine/form/lib/use-form";
+import { NewReservationFormValues } from "~/routes/reservations/new";
 
-const UserAutocomplete: FunctionComponent<Omit<AutocompleteProps, "data">> = ({
-  onChange,
-  ...rest
+type UserAutocompleteProps = {
+  form: UseFormReturnType<NewReservationFormValues>;
+  index: number;
+};
+
+const UserAutocomplete: FunctionComponent<UserAutocompleteProps> = ({
+  form,
+  index,
 }) => {
+  const { t } = useTranslation();
   const [searchStr, setSearchStr] = useState("");
   const [debounced] = useDebouncedValue(searchStr, 500);
-  const fetcher = useFetcher<GetUsersLoaderData>();
-  const names = fetcher.data?.users?.map(({ name }) => name) || [];
+  const {
+    data,
+    submit,
+    state: fetcherState,
+  } = useFetcher<GetUsersLoaderData>();
+  const names = data?.guests?.map(({ name }) => name) || [];
+  const nameInputProps = form.getListInputProps("guests", index, "name");
 
-  const handleChange = (value: string) => {
-    setSearchStr(value);
-    onChange?.(value);
+  const handleNameChange = (value: SetStateAction<string>) => {
+    setSearchStr(value.toString());
+    nameInputProps.onChange(value.toString());
+  };
+
+  const handleChooseName = (item: AutocompleteItem) => {
+    const email = data?.guests?.find(({ name }) => name === item.value)?.email;
+    form.setListItem("guests", index, {
+      name: item.value,
+      email: email || "",
+      key: randomId(),
+    });
   };
 
   useEffect(() => {
     const params = new URLSearchParams();
     params.set("name", searchStr);
-    fetcher.submit(params, { action: "/getUsers" });
+    submit(params, { action: "/api/previousGuests" });
   }, [debounced]);
 
   return (
     <>
       <Autocomplete
-        icon={fetcher.state === "submitting" && <LoaderQuarter />}
-        {...rest}
+        {...nameInputProps}
+        required
+        label={t("firstName")}
+        placeholder={t("guestNamePlaceholder")}
+        onChange={handleNameChange}
+        onItemSubmit={handleChooseName}
         data={names}
-        onChange={handleChange}
+        rightSection={fetcherState === "submitting" && <LoaderQuarter />}
       />
       <TextInput
-        label="Email"
-        value={
-          fetcher?.data?.users.find(({ name }) => rest.value === name)?.email
-        }
+        {...form.getListInputProps("guests", index, "email")}
+        label={t("email")}
+        type="email"
+        placeholder="mail@mail.com"
       />
     </>
   );

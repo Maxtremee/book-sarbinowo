@@ -11,6 +11,7 @@
     "dev:remix": "cross-env NODE_ENV=development remix dev",
     "format": "prettier --write .",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
+    "migrate:dev": "prisma migrate dev",
     "setup": "prisma migrate dev && prisma db seed",
     "start": "prisma migrate deploy && remix-serve build",
     "start:mocks": "binode --require ./mocks -- @remix-run/serve:remix-serve build",

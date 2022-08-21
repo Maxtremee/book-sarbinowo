@@ -12,16 +12,4 @@ const logger = winston.createLogger({
   ],
 });
 
-if (process.env.NODE_ENV === "production") {
-  logger.add(
-    new winston.transports.File({
-      filename: "logs/combined.log",
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-      ),
-    })
-  );
-}
-
 export default logger;

@@ -6,7 +6,7 @@ import { prisma } from "~/db.server";
 import sendCancelation from "~/email/sendCancelation";
 import sendConfirmation from "~/email/sendConfirmation";
 
-export type { Reservation, ReservationState } from "@prisma/client";
+export type { Reservation, ReservationState, Guest } from "@prisma/client";
 
 export function getReservation({
   id,

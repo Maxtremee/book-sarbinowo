@@ -1,6 +1,7 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 generator client {
@@ -46,9 +47,9 @@ model Reservation {
 
   since  DateTime
   until  DateTime
-  guests  Guest[]
+  guests Guest[]
 
-  user   User    @relation(fields: [userId], references: [id], onUpdate: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onUpdate: Cascade)
   userId String
 }
 

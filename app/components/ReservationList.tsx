@@ -1,12 +1,14 @@
 import { Stack } from "@mantine/core";
-import type { getUserReservationsOffset } from "~/models/reservation.server";
+import type { Guest, Reservation } from "~/models/reservation.server";
 import ReservationListItem from "./ReservationListItem";
 
 export default function ReservationList({
   reservations,
   showCanceled,
 }: {
-  reservations: Awaited<ReturnType<typeof getUserReservationsOffset>>;
+  reservations: (Reservation & {
+    guests: Guest[];
+  })[];
   showCanceled: boolean;
 }) {
   return (

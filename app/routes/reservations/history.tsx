@@ -1,4 +1,4 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
   Form,
@@ -26,11 +26,6 @@ import {
 } from "@mantine/core";
 import type { ChangeEvent } from "react";
 
-type LoaderData = {
-  reservations: Awaited<ReturnType<typeof getUserReservationsOffset>>;
-  totalReservations: Awaited<ReturnType<typeof getUserTotalReservations>>;
-};
-
 function parseSwitchSearchParam(param: string | null) {
   if (param === "on") {
     return true;
@@ -38,7 +33,7 @@ function parseSwitchSearchParam(param: string | null) {
   return false;
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderArgs) => {
   const params = new URL(request.url).searchParams;
   const canceled = parseSwitchSearchParam(params.get("canceled"));
   const amount = parseInt(params.get("amount") as string) || 10;
@@ -50,11 +45,11 @@ export const loader: LoaderFunction = async ({ request }) => {
     getUserReservationsOffset({ userId, amount, offset, canceled }),
     getUserTotalReservations({ userId, canceled }),
   ]);
-  return json<LoaderData>({ reservations, totalReservations });
+  return json({ reservations, totalReservations });
 };
 
 export default function ReservationsHistoryPage() {
-  const { reservations, totalReservations } = useLoaderData() as LoaderData;
+  const { reservations, totalReservations } = useLoaderData();
   const [searchParams] = useSearchParams();
   const { t } = useTranslation();
   const transition = useTransition();

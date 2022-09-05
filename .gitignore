@@ -1,20 +1,40 @@
-node_modules
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# database
+/prisma/db.sqlite
+/prisma/db.sqlite-journal
+
+# next.js
+/.next/
+/out/
+
+# production
 /build
-/public/build
-/api/index.js
-/api/index.js.map
-.cache
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local env files
 .env
+.env*.local
+
+# vercel
 .vercel
-.output
 
-/cypress/screenshots
-/cypress/videos
-/prisma/data.db
-/prisma/data.db-journal
-
-/app/styles/tailwind.css
-
-.vscode/
-logs/*
+# typescript
+*.tsbuildinfo

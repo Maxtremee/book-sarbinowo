@@ -1,7 +1,10 @@
-node_modules
+# dependencies
+/node_modules
+# testing
+/coverage
+# next.js
+/.next/
+/out/
 
+# production
 /build
-/public/build
-.env
-
-/app/styles/tailwind.css

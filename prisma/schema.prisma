@@ -9,11 +9,23 @@ datasource db {
     referentialIntegrity = "prisma"
 }
 
-model Example {
-    id String @id @default(cuid())
+enum Role {
+    USER
+    ADMIN
 }
 
-// Necessary for Next auth
+enum ReservationState {
+    ACTIVE
+    CANCELED
+}
+
+enum InquiryState {
+    SENT
+    ACCEPTED
+    REJECTED
+}
+
+// NextAuth
 model Account {
     id                String  @id @default(cuid())
     userId            String
@@ -41,13 +53,16 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String        @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?       @unique
     emailVerified DateTime?
     image         String?
+    role          Role          @default(USER)
     accounts      Account[]
     sessions      Session[]
+    Reservation   Reservation[]
+    Inquiry       Inquiry[]
 }
 
 model VerificationToken {
@@ -56,4 +71,46 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+// NextAuth
+
+model Facility {
+    id          String        @id @default(cuid())
+    name        String
+    address     String        @db.Text
+    description String?       @db.Text
+    Reservation Reservation[]
+}
+
+model Reservation {
+    id         String           @id @default(cuid())
+    createdAt  DateTime         @default(now())
+    updatedAt  DateTime         @updatedAt
+    user       User             @relation(fields: [userId], references: [id])
+    userId     String
+    guests     Guest[]
+    facility   Facility         @relation(fields: [facilityId], references: [id])
+    facilityId String
+    state      ReservationState @default(ACTIVE)
+    Inquiry    Inquiry?
+}
+
+model Guest {
+    id            String      @id @default(cuid())
+    name          String
+    email         String?
+    Reservation   Reservation @relation(fields: [reservationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+    reservationId String
+}
+
+model Inquiry {
+    id            String       @id @default(cuid())
+    createdAt     DateTime     @default(now())
+    updatedAt     DateTime     @updatedAt
+    state         InquiryState @default(SENT)
+    user          User         @relation(fields: [userId], references: [id])
+    userId        String
+    reservation   Reservation  @relation(fields: [reservationId], references: [id])
+    reservationId String       @unique
 }

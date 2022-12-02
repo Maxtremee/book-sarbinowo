@@ -1,18 +1,18 @@
-import NextAuth, { type NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import NextAuth, { type NextAuthOptions } from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
 
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "../../../server/db/client";
-import { env } from "../../../env/server.mjs";
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import { prisma } from "../../../server/db/client"
+import { env } from "../../../env/server.mjs"
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
   callbacks: {
     session({ session, user }) {
       if (session.user) {
-        session.user.id = user.id;
+        session.user.id = user.id
       }
-      return session;
+      return session
     },
   },
   adapter: PrismaAdapter(prisma),
@@ -22,6 +22,10 @@ export const authOptions: NextAuthOptions = {
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   ],
-};
+  theme: {
+    brandColor: "aquamarine",
+    logo: "https://cdn-icons-png.flaticon.com/512/430/430572.png",
+  },
+}
 
-export default NextAuth(authOptions);
+export default NextAuth(authOptions)
